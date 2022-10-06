@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class CSVReader {
-	public void insertCsvIntoDatabase(Connection conn, String fileLocation, Enum tableName) {
+	public void insertCsvIntoDatabase(Connection conn, String fileLocation, Enum<?> tableName) {
 		String line = "";
 		String splitBy = ",";
 		
@@ -19,10 +19,10 @@ public class CSVReader {
 			// Insert table and fields from formattedHeaders
 			CsvToSqlFields csvToSqlFields = new CsvToSqlFields(br);
 			String sql = String.format("CREATE TABLE %s(%s)", tableName.toString(), csvToSqlFields.getHeadersForTable());
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.execute();
+			ExecuteSql.execute(conn, sql);
 			
 			// Fill database from CSV
+			PreparedStatement ps;
 			while ((line = br.readLine()) != null) {
 				String[] item = line.split(splitBy);
 				String values = "?, ".repeat(csvToSqlFields.getNoOfFields());

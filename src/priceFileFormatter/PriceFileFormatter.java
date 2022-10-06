@@ -15,11 +15,12 @@ public class PriceFileFormatter {
 		Connection conn = Database.connect();
 		CSVReader csvReader = new CSVReader();
 		csvReader.insertCsvIntoDatabase(conn, "data/sample-products.csv", Tables.IMPORT);
+		csvReader.insertCsvIntoDatabase(conn,  "data/sample-suppliers.csv", Tables.SUPPLIER);
 		
 		// Create formatted table and populate with the new items
-		OutputModel outputModel = new OutputModel();
-		outputModel.createTable(conn);
-		outputModel.populateModel(conn);
+		ModelOutput modelOutput = new ModelOutput();
+		modelOutput.createTable(conn);
+		modelOutput.populateModel(conn);
 		
 		/* Debug GUI database 	*/		
 		DatabaseManagerSwing manager = new DatabaseManagerSwing();

@@ -1,10 +1,8 @@
 package priceFileFormatter;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
-public class OutputModel {
+public class ModelOutput {
 	String model = "CREATE TABLE IF NOT EXISTS output("
 			+ "abbrev_description VARCHAR(50), "
 			+ "their_sku VARCHAR(50), "
@@ -23,13 +21,8 @@ public class OutputModel {
 	
 	public void createTable(Connection conn) {
 		String sql = String.format(model);
-		PreparedStatement ps;
-		try {
-			ps = conn.prepareStatement(sql);
-			ps.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		ExecuteSql.execute(conn, sql);
+		
 	}
 
 	
@@ -38,34 +31,22 @@ public class OutputModel {
 		String sql = String.format("INSERT INTO output(their_sku, their_description) "
 								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION "
 								+ "from %s", Tables.IMPORT.toString());
-		executeSQL(conn, sql);
+		ExecuteSql.execute(conn, sql);
 
 		// Add prefix to our stock coded
 		sql = "UPDATE output SET our_sku = 'FLA ' + their_sku";
-		executeSQL(conn, sql);
+		ExecuteSql.execute(conn, sql);
 		
 		// Populate our description
 		sql = "UPDATE output SET description = '* ' + LEFT(their_description, 58)";
-		executeSQL(conn, sql);
+		ExecuteSql.execute(conn, sql);
 		
 		// Populate extra description
 		sql = "UPDATE output SET extra_description = SUBSTRING(their_description, 59, 60)";
-		executeSQL(conn, sql);
+		ExecuteSql.execute(conn, sql);
 		
 		// Populate abbreviated description
 		sql = "UPDATE output SET abbrev_description = REGEXP_SUBSTR(their_description, '([^\\s]+\\s+[^\\s]+)')";
-		executeSQL(conn, sql);
+		ExecuteSql.execute(conn, sql);
 	}
-	
-	
-	public void executeSQL(Connection conn, String sql) {
-		try {
-			PreparedStatement ps;
-			ps = conn.prepareStatement(sql);
-			ps.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-		
 }
