@@ -14,7 +14,7 @@ public class PriceFileFormatter {
 		// Create database and insert new products from CSV
 		Connection conn = Database.connect();
 		CSVReader csvReader = new CSVReader();
-		csvReader.insertCsvIntoDatabase("data/sample-products.csv", conn);
+		csvReader.insertCsvIntoDatabase(conn, "data/sample-products.csv", Tables.IMPORT);
 		
 		// Create formatted table and populate with the new items
 		OutputModel outputModel = new OutputModel();

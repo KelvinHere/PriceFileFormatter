@@ -35,9 +35,9 @@ public class OutputModel {
 	
 	public void populateModel(Connection conn) {
 		// Fetch data from new imports
-		String sql = "INSERT INTO output(their_sku, their_description) "
+		String sql = String.format("INSERT INTO output(their_sku, their_description) "
 								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION "
-								+ "from new_imports";
+								+ "from %s", Tables.IMPORT.toString());
 		executeSQL(conn, sql);
 
 		// Add prefix to our stock coded
