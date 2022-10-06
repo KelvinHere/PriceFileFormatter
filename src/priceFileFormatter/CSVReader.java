@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class CSVReader {
-	public void readCSV(String fileLocation, Connection conn) {
+	public void insertCsvIntoDatabase(String fileLocation, Connection conn) {
 		String line = "";
 		String splitBy = ",";
 		

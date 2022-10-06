@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Database {
 	   //static final String DB = "jdbc:hsqldb:file:data/db";
-	   static final String DB = "jdbc:hsqldb:mem:data/db";
+	   static final String DB = "jdbc:hsqldb:mem:data/db;sql.syntax_mys=true";
 	   static final String USER_NAME = "admin";
 	   static final String PASSWORD = "";
 

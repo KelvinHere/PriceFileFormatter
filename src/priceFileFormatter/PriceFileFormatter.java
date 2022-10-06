@@ -11,14 +11,20 @@ public class PriceFileFormatter {
 	}
 		
 	public void go() {
+		// Create database and insert new products from CSV
 		Connection conn = Database.connect();
 		CSVReader csvReader = new CSVReader();
-		csvReader.readCSV("data/sample-products.csv", conn);
+		csvReader.insertCsvIntoDatabase("data/sample-products.csv", conn);
+		
+		// Create formatted table and populate with the new items
+		OutputModel outputModel = new OutputModel();
+		outputModel.createTable(conn);
+		outputModel.populateModel(conn);
 		
 		/* Debug GUI database 	*/		
 		DatabaseManagerSwing manager = new DatabaseManagerSwing();
 		manager.main();		manager.connect(conn);
 		manager.start();
-		/* End of debug GUI database */
+
 	}
 }
