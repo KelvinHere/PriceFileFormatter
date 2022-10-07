@@ -3,10 +3,13 @@ package priceFileFormatter;
 import java.sql.Connection;
 
 public class ModelOutput {
-	String csvOutputFileLocation;
-	String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
+	private String csvOutputFileLocation;
+	private Enum<?> table = Tables.OUTPUT;
+	private String foreignKey = "supplier_code";
+	private String supplierTableSupplierCodeField = "supplier_code";
+	private String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
 	
-	String model = String.format("CREATE TABLE IF NOT EXISTS output("
+	private String model = String.format("CREATE TABLE IF NOT EXISTS output("
 			+ "abbrev_description VARCHAR(50), "
 			+ "their_sku VARCHAR(50), "
 			+ "our_sku VARCHAR(50), "
@@ -26,6 +29,12 @@ public class ModelOutput {
 		this.csvOutputFileLocation = csvOutputFile;
 		// Create table
 		SqlHelper.execute(conn, model);
+		
+		// Set foreign key
+		// Set primary key
+		String sql = String.format("ALTER TABLE %s ADD FOREIGN KEY (%s) REFERENCES %s(%s);", table, foreignKey, Tables.SUPPLIER, supplierTableSupplierCodeField);
+		SqlHelper.execute(conn, sql);
+		
 		populateModel(conn);
 	}
 

@@ -1,6 +1,8 @@
 package priceFileFormatter;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.hsqldb.util.DatabaseManagerSwing;
 
@@ -22,6 +24,20 @@ public class PriceFileFormatter {
 		ModelImport modelImport = new ModelImport(conn, CSV_IMPORT_FILE);
 		ModelSupplier modelSupplier = new ModelSupplier(conn, CSV_SUPPLIER_FILE);
 		ModelOutput modelOutput = new ModelOutput(conn, CSV_OUTPUT_FILE);
+		
+		String sql = "SELECT * FROM OUTPUT INNER JOIN SUPPLIER ON output.supplier_code = supplier.supplier_code WHERE their_sku = 'AYO8RP45SC'";
+		ResultSet rs = SqlHelper.query(conn, sql);
+		try {
+			if (rs.next()) {
+				System.out.println(rs.getString("our_sku"));
+				System.out.println(rs.getString("their_sku"));
+				System.out.println(rs.getString("sku_prefix"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 		/* Debug GUI database 	*/		
 		DatabaseManagerSwing manager = new DatabaseManagerSwing();
