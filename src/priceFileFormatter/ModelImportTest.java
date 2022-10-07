@@ -9,13 +9,12 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-class ModelOutputTest {
-	
+class ModelImportTest {
+
 	private static final String SAMPLE_ITEMS_CSV = "data/sample-products.csv";
-	private static final String SAMPLE_SUPPLIERS_CSV = "data/sample-suppliers.csv";
-	private static final String SAMPLE_OUTPUT_CSV = "data/sample-output.csv";
 	private static final String KNOWN_SKU = "AYO8RP45SC";
 	Connection conn;
+	Enum<?> table = Tables.IMPORT;
 
 	@AfterEach
 	void tearDown() throws SQLException {
@@ -23,20 +22,17 @@ class ModelOutputTest {
 	}
 	
 	@Test
-	void outputTableIsPopulatedWithFormattedImportedItems() throws SQLException {
+	void importTableIsPopulatedWithImportedItems() throws SQLException {
 		conn = Database.connect(); 
 		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
-		ModelSupplier modelSupplier = new ModelSupplier(conn, SAMPLE_SUPPLIERS_CSV);
-		ModelOutput modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV);
-		
 		
 		// Get item from output
-		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, KNOWN_SKU);
+		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", table, KNOWN_SKU);
 		ResultSet rs = SqlHelper.query(conn, sql);
 
 		String resultSku = ""; 
 		if (rs.next()) {
-			resultSku = rs.getString("their_sku");
+			resultSku = rs.getString("PRODUCT_CODE");
 		}
 		assertEquals(KNOWN_SKU, resultSku);
 	}

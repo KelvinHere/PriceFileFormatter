@@ -3,7 +3,10 @@ package priceFileFormatter;
 import java.sql.Connection;
 
 public class ModelOutput {
-	String model = "CREATE TABLE IF NOT EXISTS output("
+	String csvOutputFileLocation;
+	String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
+	
+	String model = String.format("CREATE TABLE IF NOT EXISTS output("
 			+ "abbrev_description VARCHAR(50), "
 			+ "their_sku VARCHAR(50), "
 			+ "our_sku VARCHAR(50), "
@@ -14,15 +17,16 @@ public class ModelOutput {
 			+ "price_2 DECIMAL(15,2), "
 			+ "group_1 VARCHAR(4), "
 			+ "group_2 VARCHAR(4), "
-			+ "supplier VARCHAR(4), "
+			+ "supplier_code VARCHAR(4), "
 			+ "vat_switch VARCHAR(1), "
-			+ "their_description VARCHAR(255))";
+			+ "their_description VARCHAR(255))");
 
 	
-	public void createTable(Connection conn) {
-		String sql = String.format(model);
-		ExecuteSql.execute(conn, sql);
-		
+	public ModelOutput(Connection conn, String csvOutputFile) {
+		this.csvOutputFileLocation = csvOutputFile;
+		// Create table
+		SqlHelper.execute(conn, model);
+		populateModel(conn);
 	}
 
 	
@@ -31,22 +35,26 @@ public class ModelOutput {
 		String sql = String.format("INSERT INTO output(their_sku, their_description) "
 								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION "
 								+ "from %s", Tables.IMPORT.toString());
-		ExecuteSql.execute(conn, sql);
+		SqlHelper.execute(conn, sql);
 
 		// Add prefix to our stock coded
 		sql = "UPDATE output SET our_sku = 'FLA ' + their_sku";
-		ExecuteSql.execute(conn, sql);
+		SqlHelper.execute(conn, sql);
 		
 		// Populate our description
 		sql = "UPDATE output SET description = '* ' + LEFT(their_description, 58)";
-		ExecuteSql.execute(conn, sql);
+		SqlHelper.execute(conn, sql);
 		
 		// Populate extra description
 		sql = "UPDATE output SET extra_description = SUBSTRING(their_description, 59, 60)";
-		ExecuteSql.execute(conn, sql);
+		SqlHelper.execute(conn, sql);
 		
 		// Populate abbreviated description
 		sql = "UPDATE output SET abbrev_description = REGEXP_SUBSTR(their_description, '([^\\s]+\\s+[^\\s]+)')";
-		ExecuteSql.execute(conn, sql);
+		SqlHelper.execute(conn, sql);
+		
+		// Populate Supplier code
+		sql = "UPDATE output SET supplier_code = 'FL01'";
+		SqlHelper.execute(conn, sql);
 	}
 }
