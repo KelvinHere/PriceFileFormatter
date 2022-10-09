@@ -5,8 +5,8 @@ import java.sql.Connection;
 public class ModelImport {
 	public static final Enum<?> TABLE = Tables.IMPORT; 
 	
-	public ModelImport(Connection conn, String fileLocation) {
-		// Create table from CSV
+	public static void importItems(Connection conn, String fileLocation) {
+		// Create importTable from CSV
 		String fieldsSql = String.format("CREATE TABLE %s(%s)", TABLE, CsvGetFields.get(fileLocation));
 		SqlHelper.execute(conn, fieldsSql);
 		

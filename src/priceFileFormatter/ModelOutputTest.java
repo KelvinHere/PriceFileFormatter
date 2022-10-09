@@ -34,7 +34,7 @@ class ModelOutputTest {
 	void outputTableIsPopulatedWithFormattedImportedItems() throws SQLException {
 		Connection conn = setup();
 		
-		// Get item from output table
+		// Get item from output importTable
 		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, KNOWN_SKU);
 		ResultSet rs = SqlHelper.query(conn, sql);
 
@@ -51,7 +51,7 @@ class ModelOutputTest {
 	void canPullForeignKeyDataFromOutputItem() throws SQLException {
 		Connection conn = setup();
 		
-		// Get item from output table
+		// Get item from output importTable
 		String sql = String.format("SELECT * FROM OUTPUT INNER JOIN SUPPLIER ON output.supplier_code = supplier.supplier_code WHERE their_sku = 'AYO8RP45SC';");
 		ResultSet rs = SqlHelper.query(conn, sql);
 		
@@ -73,7 +73,7 @@ class ModelOutputTest {
 	
 	public Connection setup() {
 		conn = Database.connect(); 
-		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
+		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
 		ModelSupplier modelSupplier = new ModelSupplier(conn, SAMPLE_SUPPLIERS_CSV);
 		ModelOutput modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV);
 		return conn;

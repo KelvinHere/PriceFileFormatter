@@ -7,7 +7,7 @@ import java.io.IOException;
 public class CsvGetFields {
 	
 	public static String get(String fileLocation) {
-		// Create SQL for creation of DB table and fields from first line of CSV
+		// Create SQL for creation of DB importTable and fields from first line of CSV
 		String tableFieldsSql = null;
 		String line = "";
 		

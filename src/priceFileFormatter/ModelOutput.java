@@ -27,7 +27,7 @@ public class ModelOutput {
 	
 	public ModelOutput(Connection conn, String csvOutputFile) {
 		this.csvOutputFileLocation = csvOutputFile;
-		// Create table
+		// Create importTable
 		SqlHelper.execute(conn, model);
 		
 		// Set foreign key
@@ -39,7 +39,7 @@ public class ModelOutput {
 	}
 
 	
-	public void populateModel(Connection conn) {
+	private void populateModel(Connection conn) {
 		// Fetch data from new imports
 		String sql = String.format("INSERT INTO output(their_sku, their_description) "
 								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION "
