@@ -74,7 +74,7 @@ class ModelOutputTest {
 	public Connection setup() {
 		conn = Database.connect(); 
 		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
-		ModelSupplier modelSupplier = new ModelSupplier(conn, SAMPLE_SUPPLIERS_CSV);
+		ModelSupplier.importSuppliers(conn, SAMPLE_SUPPLIERS_CSV);
 		ModelOutput modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV);
 		return conn;
 	}

@@ -24,7 +24,7 @@ class ModelSupplierTest {
 	@Test
 	void supplierTableIsPopulatedFromSupplierCSV() throws SQLException {
 		conn = Database.connect(); 
-		ModelSupplier modelSupplier = new ModelSupplier(conn, SAMPLE_SUPPLIERS_CSV);
+		ModelSupplier.importSuppliers(conn, SAMPLE_SUPPLIERS_CSV);
 		
 		// Get item from output
 		String sql = String.format("SELECT * from %s WHERE supplier_code = '%s';", table, KNOWN_SUPPLIER_CODE);

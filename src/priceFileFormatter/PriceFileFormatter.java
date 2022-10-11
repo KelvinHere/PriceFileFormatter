@@ -17,15 +17,16 @@ public class PriceFileFormatter {
 	public void go() {
 		// Create database and insert new products from CSV
 		Connection conn = Database.connect();
-		// Create all needed tables
+		// Create import & supplier tables and populate
 		ModelImport.importItems(conn, CSV_IMPORT_FILE);
-		ModelSupplier modelSupplier = new ModelSupplier(conn, CSV_SUPPLIER_FILE);
+		ModelSupplier.importSuppliers(conn, CSV_SUPPLIER_FILE);
+		
+		// Create output table
 		ModelOutput modelOutput = new ModelOutput(conn, CSV_OUTPUT_FILE);
 		
 		/* Debug GUI database 	*/		
 		DatabaseManagerSwing manager = new DatabaseManagerSwing();
 		manager.main();		manager.connect(conn);
 		manager.start();
-
 	}
 }

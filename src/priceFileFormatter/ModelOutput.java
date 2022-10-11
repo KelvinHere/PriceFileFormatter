@@ -51,7 +51,7 @@ public class ModelOutput {
 		SqlHelper.execute(conn, sql);
 		
 		// Populate our description
-		sql = "UPDATE output SET description = '* ' + LEFT(their_description, 58)";
+		sql = "UPDATE output SET description = '\u2022 ' + LEFT(their_description, 58)";
 		SqlHelper.execute(conn, sql);
 		
 		// Populate extra description

@@ -28,10 +28,12 @@ class ModelImportTest {
 	Connection conn;
 	Enum<?> importTable = Tables.IMPORT;
 
+	
 	@AfterEach
 	void tearDown() throws SQLException {
 		conn.close();
 	}
+
 	
 	@Test
 	void importTableIsPopulatedFirstItem() throws SQLException {
@@ -73,7 +75,7 @@ class ModelImportTest {
 		// import sample items to import importTable
 		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
 		
-		// Get amount of items in table
+		// Get amount of items in SUPPLIER_TABLE
 		String sql = String.format("SELECT COUNT(*) AS total FROM %s", importTable);
 		ResultSet rs = SqlHelper.query(conn, sql);
 		rs.next();
