@@ -7,7 +7,7 @@ public class ModelImport {
 	
 	public static void importItems(Connection conn, String fileLocation) {
 		// Create importTable from CSV
-		String fieldsSql = String.format("CREATE IMPORT_TABLE %s(%s)", IMPORT_TABLE, CsvGetFields.get(fileLocation));
+		String fieldsSql = String.format("CREATE TABLE %s(%s)", IMPORT_TABLE, CsvGetFields.get(fileLocation));
 		SqlHelper.execute(conn, fieldsSql);
 		
 		// Import data into fields
