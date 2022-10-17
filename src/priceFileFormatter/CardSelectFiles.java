@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class CardSelectFiles extends JPanel {
 	
@@ -12,7 +15,9 @@ public class CardSelectFiles extends JPanel {
 	private JButton priceFileButton;
 	private JButton reportButton;
 	private JButton processButton;
+	private JComboBox<String> supplierListDropdown;
 	private JLabel instructions = new JLabel("<html><br><br>1. Select a New Price File<br> 2. (Optional) Select a Report File<br> 3. Press the NEXT button</html>");
+	private JLabel suppliersMessageLabel = new JLabel("Select Supplier");
 	private JLabel priceFileMessageLabel = new JLabel("Select Price File");
 	private JLabel reportMessageLabel = new JLabel("Select Report File");
 	private JFileChooser chooser;
@@ -23,14 +28,43 @@ public class CardSelectFiles extends JPanel {
 	
 	public CardSelectFiles(PriceFileFormatter priceFileFormatter) {
 		this.priceFileFormatter = priceFileFormatter;
+		makeSuppliersDropdownMenu();
 		buildSwingComponents();
-		setListeners();
+		setListeners();		
 		
 		// Set file chooser to relative data directory
 		String location = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
 		String formattedLocation = location.substring(6, (location.length() - 4)) + "data\\";
 		formattedLocation = formattedLocation.replace("/", "\\");
 		chooser = new JFileChooser(formattedLocation);
+	}
+	
+	
+	private void makeSuppliersDropdownMenu() {
+		// Make JComboBox with all suppliers listed
+		String sql = String.format("SELECT COUNT(*) AS total FROM %s", Tables.SUPPLIER);
+		ResultSet rs = SqlHelper.query(priceFileFormatter.getConnection(), sql);
+		int numOfSuppliers = 0;
+		try {
+			rs.next();
+			numOfSuppliers = rs.getInt("total");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		String[] supplierList = new String[numOfSuppliers];
+		sql = String.format("SELECT * FROM %s", Tables.SUPPLIER);
+		rs = SqlHelper.query(priceFileFormatter.getConnection(), sql);
+		try {
+			int count = 0;
+			while (rs.next()) {
+				supplierList[count] = (rs.getString("supplier_name"));
+				count++;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		supplierListDropdown = new JComboBox<String>(supplierList);
 	}
 
 	
@@ -59,6 +93,15 @@ public class CardSelectFiles extends JPanel {
 		gridBagConstraints.ipady = 40;
 		
 		this.add(BorderLayout.CENTER, selectionPanel);
+		
+		// Suppliers panel
+		JPanel suppliersPanel = new JPanel();
+		suppliersPanel.setLayout(new BoxLayout(suppliersPanel, BoxLayout.PAGE_AXIS));
+		suppliersMessageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		supplierListDropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
+		suppliersPanel.add(suppliersMessageLabel);
+		suppliersPanel.add(supplierListDropdown);
+		selectionPanel.add(suppliersPanel);
 		
 		// Price file Panel child of Selection Panel
 		JPanel priceFilePanel = new JPanel();

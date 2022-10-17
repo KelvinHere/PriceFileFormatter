@@ -78,6 +78,11 @@ public class PriceFileFormatter {
 	}
 	
 	
+	public Connection getConnection() {
+		return this.conn;
+	}
+	
+	
 	private void showDBGui(Connection conn) {
 		DatabaseManagerSwing manager = new DatabaseManagerSwing();
 		manager.main();
