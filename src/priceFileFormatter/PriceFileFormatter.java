@@ -8,6 +8,7 @@ public class PriceFileFormatter {
 	private String csvImportFile = "data/sample-products.csv";
 	private String csvSupplierFile = "data/sample-suppliers.csv";
 	private String csvOutputFile = "data/sample-output.csv";
+	private String selectedSupplier;
 	private final boolean SHOW_DB_GUI = true;
 	private Connection conn;
 	

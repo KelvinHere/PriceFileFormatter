@@ -1,6 +1,9 @@
 package priceFileFormatter;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 
 public class ModelOutput {
 	private String csvOutputFileLocation;
@@ -8,6 +11,8 @@ public class ModelOutput {
 	private String foreignKey = "supplier_code";
 	private String supplierTableSupplierCodeField = "supplier_code";
 	private String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
+	private String selectedSupplier = "FL01";
+	private HashMap<String, String> supplier = new HashMap<>();
 	
 	private String model = String.format("CREATE TABLE IF NOT EXISTS output("
 			+ "abbrev_description VARCHAR(50), "
@@ -31,39 +36,81 @@ public class ModelOutput {
 		SqlHelper.execute(conn, model);
 		
 		// Set foreign key
-		// Set primary key
 		String sql = String.format("ALTER TABLE %s ADD FOREIGN KEY (%s) REFERENCES %s(%s);", table, foreignKey, Tables.SUPPLIER, supplierTableSupplierCodeField);
 		SqlHelper.execute(conn, sql);
 		
 		populateModel(conn);
 	}
-
+	
 	
 	private void populateModel(Connection conn) {
+		// Set up supplier data 
+		String sql = String.format("SELECT * FROM %s WHERE supplier_code = '%s'", Tables.SUPPLIER, selectedSupplier);
+		ResultSet rs = SqlHelper.query(conn, sql);
+		supplier = supplierRsToHashMap(rs);
+		
 		// Fetch data from new imports
-		String sql = String.format("INSERT INTO output(their_sku, their_description) "
-								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION "
-								+ "from %s", Tables.IMPORT.toString());
+		sql = String.format("INSERT INTO %s(their_sku, their_description, net_cost) "
+								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION, NET_COST "
+								+ "from %s", Tables.OUTPUT, Tables.IMPORT);
 		SqlHelper.execute(conn, sql);
 
-		// Add prefix to our stock coded
-		sql = "UPDATE output SET our_sku = 'FLA ' + their_sku";
+		// Add prefix to our_sku
+		sql = String.format("UPDATE output SET our_sku = '%s ' + their_sku", supplier.get("sku_prefix"));
 		SqlHelper.execute(conn, sql);
 		
-		// Populate our description
+		// Populate our description (Up to 58 characters and prefixed with bullet point + space)
 		sql = "UPDATE output SET description = '\u2022 ' + LEFT(their_description, 58)";
 		SqlHelper.execute(conn, sql);
 		
-		// Populate extra description
+		// Populate extra description (Anything over 59 characters)
 		sql = "UPDATE output SET extra_description = SUBSTRING(their_description, 59, 60)";
 		SqlHelper.execute(conn, sql);
 		
-		// Populate abbreviated description
+		// Populate abbreviated description (First 2 words)
 		sql = "UPDATE output SET abbrev_description = REGEXP_SUBSTR(their_description, '([^\\s]+\\s+[^\\s]+)')";
 		SqlHelper.execute(conn, sql);
 		
-		// Populate Supplier code
-		sql = "UPDATE output SET supplier_code = 'FL01'";
+		// Populate Supplier fields
+		sql = String.format("UPDATE output SET supplier_code = '%s', "
+							+ "group_1 = '%s', "
+							+ "group_2 = '%s' ,"
+							+ "vat_switch = '%s';", 
+							supplier.get("supplier_code"), supplier.get("group_code_1"), 
+							supplier.get("group_code_2"), supplier.get("vat_switch"));
 		SqlHelper.execute(conn, sql);
+		
+		// Price 1 = Net Cost * Mark-up 1 * Vat
+		sql = String.format("UPDATE output SET price_1 = output.net_cost * %s * %s", supplier.get("markup_1"), supplier.get("vat"));
+		SqlHelper.execute(conn, sql);
+		
+		// Price 2 = Net Cost * Mark-up 2 * Vat
+		sql = String.format("UPDATE output SET price_2 = output.net_cost * %s * %s", supplier.get("markup_2"), supplier.get("vat"));
+		SqlHelper.execute(conn, sql);
+	}
+	
+	
+	private HashMap<String, String> supplierRsToHashMap(ResultSet rs) {
+		HashMap<String, String> result = new HashMap<>();
+		try {
+			rs.next();
+			result.put("supplier_name", rs.getString("supplier_name"));
+			result.put("sku_prefix", rs.getString("sku_prefix"));
+			result.put("supplier_code", rs.getString("supplier_code"));
+			result.put("markup_1", rs.getString("markup_1"));
+			result.put("markup_2", rs.getString("markup_2"));
+			result.put("group_code_1", rs.getString("group_code_1"));
+			result.put("group_code_2", rs.getString("group_code_2"));
+			result.put("vat_switch", rs.getString("vat_switch"));
+			result.put("vat", rs.getString("vat"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	
+	public HashMap<String, String> getSupplierHashMap() {
+		return supplier;
 	}
 }

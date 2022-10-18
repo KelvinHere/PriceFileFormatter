@@ -7,19 +7,32 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 class ModelOutputTest {
 	
 	private static final String SAMPLE_ITEMS_CSV = "data/sample-products.csv";
 	private static final String SAMPLE_SUPPLIERS_CSV = "data/sample-suppliers.csv";
 	private static final String SAMPLE_OUTPUT_CSV = "data/sample-output.csv";
-	private static final String KNOWN_SKU = "AYO8RP45SC";
+	private static final String THEIR_KNOWN_SKU = "AYO8HRP50CBRBC";
+	
+	private static final String EXPECTED_SKU = "FLA AYO8HRP50CBRBC";
+	private static final String EXPECTED_DESCRIPTION = "• AYO 8MM HINGE ROTATING DEFLECTOR PANEL 500MM BRUSHED BRASS";
+	private static final String EXPECTED_EXTRA_DESCRIPTION = " COMPLETE";
+	private static final String EXPECTED_ABBREVIATED_DESCRIPTION = "AYO 8MM";
+	private static final String EXPECTED_VAT_SWITCH = "I";
+	private static final String EXPECTED_GROUP_1 = "BA";
+	private static final String EXPECTED_GROUP_2 = "FLA";
+	private static final Double EXPECTED_PRICE_1 = 757.93;
+	private static final Double EXPECTED_PRICE_2 = 699.62;
 	
 	private static final String FOREIGN_SUPPLIER_NAME = "Flair";
 	private static final String FOREIGN_SUPPLIER_CODE = "FL01";
 	private static final String FOREIGN_SUPPLIER_SKU_PREFIX = "FLA";
 	
 	Connection conn;
+	ModelOutput modelOutput;
 	
 	
 	@AfterEach
@@ -27,6 +40,7 @@ class ModelOutputTest {
 		// Drop database
 		String sql = "DROP SCHEMA PUBLIC CASCADE";
 		SqlHelper.execute(conn, sql);
+		ModelOutput modelOutput = null;
 	}
 	
 	
@@ -35,15 +49,48 @@ class ModelOutputTest {
 		Connection conn = setup();
 		
 		// Get item from output importTable
-		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, KNOWN_SKU);
+		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, THEIR_KNOWN_SKU);
 		ResultSet rs = SqlHelper.query(conn, sql);
 
-		String result = null;
-		if (rs.next()) {
-			result = rs.getString("their_sku");
-		}
+		rs.next();
+		String theirSku = rs.getString("their_sku");
+		String formattedSku = rs.getString("our_sku");
+		String description = rs.getString("description");
+		String extraDescription = rs.getString("extra_description");
+		String abbreviatedDescription = rs.getString("abbrev_description");
+		String vatSwitch = rs.getString("vat_switch");
+		String group1 = rs.getString("group_1");
+		String group2 = rs.getString("group_2");
+		Double price1 = rs.getDouble("price_1");
+		Double price2 = rs.getDouble("price_2");
 		
-		assertEquals(KNOWN_SKU, result);
+		assertEquals(THEIR_KNOWN_SKU, theirSku);
+		assertEquals(EXPECTED_SKU, formattedSku);
+		assertEquals(EXPECTED_DESCRIPTION, description);
+		assertEquals(EXPECTED_EXTRA_DESCRIPTION, extraDescription);
+		assertEquals(EXPECTED_ABBREVIATED_DESCRIPTION, abbreviatedDescription);
+		assertEquals(EXPECTED_VAT_SWITCH, vatSwitch);
+		assertEquals(EXPECTED_GROUP_1, group1);
+		assertEquals(EXPECTED_GROUP_2, group2);
+		assertEquals(EXPECTED_PRICE_1, price1);
+		assertEquals(EXPECTED_PRICE_2, price2);
+	}
+	
+	
+	@Test
+	void outputTablePricesAreCorrect() throws SQLException {
+		Connection conn = setup();
+		
+		// Get item from output importTable
+		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, THEIR_KNOWN_SKU);
+		ResultSet rs = SqlHelper.query(conn, sql);
+
+		rs.next();
+		Double actualPrice1 = rs.getDouble("price_1");
+		Double actualPrice2 = rs.getDouble("price_2");
+		
+		assertEquals(EXPECTED_PRICE_1, actualPrice1);
+		assertEquals(EXPECTED_PRICE_2, actualPrice2);
 	}
 	
 	
@@ -69,13 +116,33 @@ class ModelOutputTest {
 		assertEquals(FOREIGN_SUPPLIER_SKU_PREFIX, foreignSupplierSkuPrefix);
 
 	}
+	
+	
+	@Test
+	void suppliersRsToHashMapContainsCorrectData() throws SQLException{
+		Connection conn = setup();
+		
+		HashMap<String, String> expectedData = new HashMap<>();
+		expectedData.put("supplier_name", "Flair");
+		expectedData.put("sku_prefix", "FLA");
+		expectedData.put("supplier_code", "FL01");
+		expectedData.put("markup_1", "1.3");
+		expectedData.put("markup_2", "1.2");
+		expectedData.put("group_code_1", "BA");
+		expectedData.put("group_code_2", "FLA");
+		expectedData.put("vat_switch", "I");
+		expectedData.put("vat", "1.23");
+		HashMap<String, String> actualData = modelOutput.getSupplierHashMap();
+		
+		assertTrue(actualData.equals(expectedData));
+	}
 
 	
 	public Connection setup() {
 		conn = Database.connect(); 
-		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
 		ModelSupplier.importSuppliers(conn, SAMPLE_SUPPLIERS_CSV);
-		ModelOutput modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV);
+		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
+		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV);
 		return conn;
 	}
 }
