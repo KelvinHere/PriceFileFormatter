@@ -2,11 +2,9 @@ package priceFileFormatter;
 
 import java.awt.*;
 import javax.swing.*;
-import java.sql.Connection;
 
 
 public class Gui {
-	// Gui
 	final static int FRAME_WIDTH = 1280;
 	final static int FRAME_HEIGHT = 720;
 	

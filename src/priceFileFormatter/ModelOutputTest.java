@@ -15,6 +15,7 @@ class ModelOutputTest {
 	private static final String SAMPLE_ITEMS_CSV = "data/sample-products.csv";
 	private static final String SAMPLE_SUPPLIERS_CSV = "data/sample-suppliers.csv";
 	private static final String SAMPLE_OUTPUT_CSV = "data/sample-output.csv";
+	private static final String DEFAULT_SUPPLIER = "FL01";
 	private static final String THEIR_KNOWN_SKU = "AYO8HRP50CBRBC";
 	
 	private static final String EXPECTED_SKU = "FLA AYO8HRP50CBRBC";
@@ -142,7 +143,7 @@ class ModelOutputTest {
 		conn = Database.connect(); 
 		ModelSupplier.importSuppliers(conn, SAMPLE_SUPPLIERS_CSV);
 		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
-		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV);
+		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV, DEFAULT_SUPPLIER);
 		return conn;
 	}
 }

@@ -33,9 +33,9 @@ public class PriceFileFormatter {
 		gui.go();
 	}
 	
-	public void processFiles() {
+	public void processFiles(String supplier) {
 		// Create output table in database
-		ModelOutput modelOutput = new ModelOutput(conn, csvOutputFile);
+		ModelOutput modelOutput = new ModelOutput(conn, csvOutputFile, supplier);
 	}
 
 	

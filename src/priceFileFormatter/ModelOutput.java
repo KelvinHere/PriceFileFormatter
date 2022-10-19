@@ -12,7 +12,7 @@ public class ModelOutput {
 	private String supplierTableSupplierCodeField = "supplier_code";
 	private String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
 	private String selectedSupplier = "FL01";
-	private HashMap<String, String> supplier = new HashMap<>();
+	private HashMap<String, String> supplierData = new HashMap<>();
 	
 	private String model = String.format("CREATE TABLE IF NOT EXISTS output("
 			+ "abbrev_description VARCHAR(50), "
@@ -30,7 +30,8 @@ public class ModelOutput {
 			+ "their_description VARCHAR(255))");
 
 	
-	public ModelOutput(Connection conn, String csvOutputFile) {
+	public ModelOutput(Connection conn, String csvOutputFile, String supplier) {
+		this.selectedSupplier = supplier;
 		this.csvOutputFileLocation = csvOutputFile;
 		// Create importTable
 		SqlHelper.execute(conn, model);
@@ -44,10 +45,10 @@ public class ModelOutput {
 	
 	
 	private void populateModel(Connection conn) {
-		// Set up supplier data 
-		String sql = String.format("SELECT * FROM %s WHERE supplier_code = '%s'", Tables.SUPPLIER, selectedSupplier);
+		// Set up supplierData data 
+		String sql = String.format("SELECT * FROM %s WHERE supplier_name = '%s'", Tables.SUPPLIER, selectedSupplier);
 		ResultSet rs = SqlHelper.query(conn, sql);
-		supplier = supplierRsToHashMap(rs);
+		supplierData = supplierRsToHashMap(rs);
 		
 		// Fetch data from new imports
 		sql = String.format("INSERT INTO %s(their_sku, their_description, net_cost) "
@@ -56,7 +57,7 @@ public class ModelOutput {
 		SqlHelper.execute(conn, sql);
 
 		// Add prefix to our_sku
-		sql = String.format("UPDATE output SET our_sku = '%s ' + their_sku", supplier.get("sku_prefix"));
+		sql = String.format("UPDATE output SET our_sku = '%s ' + their_sku", supplierData.get("sku_prefix"));
 		SqlHelper.execute(conn, sql);
 		
 		// Populate our description (Up to 58 characters and prefixed with bullet point + space)
@@ -76,16 +77,16 @@ public class ModelOutput {
 							+ "group_1 = '%s', "
 							+ "group_2 = '%s' ,"
 							+ "vat_switch = '%s';", 
-							supplier.get("supplier_code"), supplier.get("group_code_1"), 
-							supplier.get("group_code_2"), supplier.get("vat_switch"));
+							supplierData.get("supplier_code"), supplierData.get("group_code_1"), 
+							supplierData.get("group_code_2"), supplierData.get("vat_switch"));
 		SqlHelper.execute(conn, sql);
 		
 		// Price 1 = Net Cost * Mark-up 1 * Vat
-		sql = String.format("UPDATE output SET price_1 = output.net_cost * %s * %s", supplier.get("markup_1"), supplier.get("vat"));
+		sql = String.format("UPDATE output SET price_1 = output.net_cost * %s * %s", supplierData.get("markup_1"), supplierData.get("vat"));
 		SqlHelper.execute(conn, sql);
 		
 		// Price 2 = Net Cost * Mark-up 2 * Vat
-		sql = String.format("UPDATE output SET price_2 = output.net_cost * %s * %s", supplier.get("markup_2"), supplier.get("vat"));
+		sql = String.format("UPDATE output SET price_2 = output.net_cost * %s * %s", supplierData.get("markup_2"), supplierData.get("vat"));
 		SqlHelper.execute(conn, sql);
 	}
 	
@@ -111,6 +112,6 @@ public class ModelOutput {
 	
 	
 	public HashMap<String, String> getSupplierHashMap() {
-		return supplier;
+		return supplierData;
 	}
 }
