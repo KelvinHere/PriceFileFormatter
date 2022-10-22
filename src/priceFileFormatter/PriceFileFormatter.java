@@ -1,6 +1,8 @@
 package priceFileFormatter;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+
 import org.hsqldb.util.DatabaseManagerSwing;
 
 public class PriceFileFormatter {
@@ -11,6 +13,7 @@ public class PriceFileFormatter {
 	private String selectedSupplier;
 	private final boolean SHOW_DB_GUI = true;
 	private Connection conn;
+	private Gui gui;
 	
 	
 	public static void main(String[] args) {
@@ -33,12 +36,24 @@ public class PriceFileFormatter {
 		gui.go();
 	}
 	
+	
 	public void processFiles(String supplier) {
 		// Create output table in database
 		ModelOutput modelOutput = new ModelOutput(conn, csvOutputFile, supplier);
+		ResultSet rs = modelOutput.getOutputData();
+		gui.getCardOutput().updateOutputField(rs);
+	}
+	
+	
+	private void showDBGui(Connection conn) {
+		DatabaseManagerSwing manager = new DatabaseManagerSwing();
+		manager.main();
+		manager.connect(conn);
+		manager.start();
 	}
 
 	
+	// Getters / Setters
 	public String getCsvImportFile() {
 		return csvImportFile;
 	}
@@ -83,12 +98,11 @@ public class PriceFileFormatter {
 		return this.conn;
 	}
 	
-	
-	private void showDBGui(Connection conn) {
-		DatabaseManagerSwing manager = new DatabaseManagerSwing();
-		manager.main();
-		manager.connect(conn);
-		manager.start();
+	public void setGui(Gui gui) {
+		this.gui = gui;
 	}
-		
+	
+	public Gui getGui() {
+		return gui;
+	}
 }

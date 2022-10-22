@@ -13,6 +13,7 @@ public class ModelOutput {
 	private String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
 	private String selectedSupplier = "FL01";
 	private HashMap<String, String> supplierData = new HashMap<>();
+	private Connection conn;
 	
 	private String model = String.format("CREATE TABLE IF NOT EXISTS output("
 			+ "abbrev_description VARCHAR(50), "
@@ -32,6 +33,7 @@ public class ModelOutput {
 	
 	public ModelOutput(Connection conn, String csvOutputFile, String supplier) {
 		this.selectedSupplier = supplier;
+		this.conn = conn;
 		this.csvOutputFileLocation = csvOutputFile;
 		// Create importTable
 		SqlHelper.execute(conn, model);
@@ -40,11 +42,11 @@ public class ModelOutput {
 		String sql = String.format("ALTER TABLE %s ADD FOREIGN KEY (%s) REFERENCES %s(%s);", table, foreignKey, Tables.SUPPLIER, supplierTableSupplierCodeField);
 		SqlHelper.execute(conn, sql);
 		
-		populateModel(conn);
+		populateModel();
 	}
 	
 	
-	private void populateModel(Connection conn) {
+	private void populateModel() {
 		// Set up supplierData data 
 		String sql = String.format("SELECT * FROM %s WHERE supplier_name = '%s'", Tables.SUPPLIER, selectedSupplier);
 		ResultSet rs = SqlHelper.query(conn, sql);
@@ -113,5 +115,12 @@ public class ModelOutput {
 	
 	public HashMap<String, String> getSupplierHashMap() {
 		return supplierData;
+	}
+	
+	
+	public ResultSet getOutputData() {
+		String sql = String.format("SELECT * FROM %s ORDER BY description ASC", Tables.OUTPUT);
+		ResultSet rs = SqlHelper.query(conn, sql); 
+		return rs;
 	}
 }

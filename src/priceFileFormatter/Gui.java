@@ -8,29 +8,34 @@ public class Gui {
 	final static int FRAME_WIDTH = 1280;
 	final static int FRAME_HEIGHT = 720;
 	
-	private CardSelectFiles CardSelectFiles;
+	private CardSelectFiles cardSelectFiles;
+	private CardOutput cardOutput;
 	private JTabbedPane tabbedPane;
 
 	// Files
 	final static String FILE_SELECT = "Select Files";
     final static String DATA_SELECT = "Select Data";
-    final static String PROCESSED_DATA = "Processed Data";
+    final static String PROCESSED_DATA = "Output";
     
     PriceFileFormatter priceFileFormatter;
     
     
     public Gui(PriceFileFormatter priceFileFormatter) {
     	this.priceFileFormatter = priceFileFormatter;
+    	priceFileFormatter.setGui(this);
     }
     
     
     public void addComponentToPane(Container pane) {
         tabbedPane = new JTabbedPane();
-        // Card 1
-        CardSelectFiles = new CardSelectFiles(priceFileFormatter);
+        // Card 1 - Select Files
+        cardSelectFiles = new CardSelectFiles(priceFileFormatter);
+        // Card 3 - Output
+        cardOutput = new CardOutput(priceFileFormatter);
 
         // Add cards to pane
-        tabbedPane.addTab(FILE_SELECT, CardSelectFiles);
+        tabbedPane.addTab(FILE_SELECT, cardSelectFiles);
+        tabbedPane.addTab(PROCESSED_DATA, cardOutput);
         
         pane.add(tabbedPane, BorderLayout.CENTER);
     }
@@ -48,7 +53,11 @@ public class Gui {
     
     
     public void switchToCardSelectFiles() {
-    	tabbedPane.setSelectedComponent(CardSelectFiles);
+    	tabbedPane.setSelectedComponent(cardSelectFiles);
+    }
+    
+    public void switchToCardOutput() {
+    	tabbedPane.setSelectedComponent(cardOutput);
     }
  
     
@@ -75,4 +84,7 @@ public class Gui {
     }
     
     
+    public CardOutput getCardOutput() {
+    	return cardOutput;
+    }
 }

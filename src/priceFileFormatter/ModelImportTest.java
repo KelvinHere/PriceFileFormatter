@@ -18,11 +18,11 @@ class ModelImportTest {
 	private static final String SAMPLE_ITEMS_CSV = "data/sample-products.csv";
 	private static final String FIRST_IMPORTED_SKU = "AYO8RP45SC";
 	private static final String FIRST_IMPORTED_PRODUCT_DESCRIPTION = "AYO 8MM ROTATING PANEL 450MM SILVER-R8MM (C)";
-	private static final String FIRST_IMPORTED_NET_COST = "273.00";
+	private static final String FIRST_IMPORTED_NET_COST = "131.00";
 	
 	private static final String LAST_IMPORTED_SKU = "BP5EWH";
 	private static final String LAST_IMPORTED_PRODUCT_DESCRIPTION = "BATH PANEL END WHITE & ANGLE";
-	private static final String LAST_IMPORTED_NET_COST = "24.00";
+	private static final String LAST_IMPORTED_NET_COST = "138.00";
 	private static final int TOTAL_ITEMS_IN_FILE = 66;
 	
 	Connection conn;

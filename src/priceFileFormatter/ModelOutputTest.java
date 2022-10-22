@@ -25,8 +25,8 @@ class ModelOutputTest {
 	private static final String EXPECTED_VAT_SWITCH = "I";
 	private static final String EXPECTED_GROUP_1 = "BA";
 	private static final String EXPECTED_GROUP_2 = "FLA";
-	private static final Double EXPECTED_PRICE_1 = 757.93;
-	private static final Double EXPECTED_PRICE_2 = 699.62;
+	private static final Double EXPECTED_PRICE_1 = 167.89;
+	private static final Double EXPECTED_PRICE_2 = 154.98;
 	
 	private static final String FOREIGN_SUPPLIER_NAME = "Flair";
 	private static final String FOREIGN_SUPPLIER_CODE = "FL01";

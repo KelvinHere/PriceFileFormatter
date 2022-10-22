@@ -168,6 +168,7 @@ public class CardSelectFiles extends JPanel {
 	private class NextButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			priceFileFormatter.processFiles(supplierListDropdown.getSelectedItem().toString());
+			priceFileFormatter.getGui().switchToCardOutput();
 		}
 	}
 
