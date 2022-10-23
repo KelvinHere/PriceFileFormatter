@@ -32,17 +32,17 @@ public class CardOutput extends JPanel {
 		outputField.setText("");
 		try {
 			while (rs.next() ) {
-				outputField.append(rs.getString("abbrev_description") + " ," +
-									rs.getString("their_sku") + " ," +
-									rs.getString("our_sku") + " ," +
-									rs.getString("description") + " ," + 
-									rs.getString("extra_description") + " ," +
-									rs.getDouble("Net_Cost") + " ," +
-									rs.getDouble("price_1") + " ," +
-									rs.getDouble("price_2") + " ," +
-									rs.getString("group_1") + " ," +
-									rs.getString("group_2") + " ," +
-									rs.getString("supplier_code") + " ," +
+				outputField.append(rs.getString("abbrev_description") + "," +
+									rs.getString("their_sku") + "," +
+									rs.getString("our_sku") + "," +
+									rs.getString("description") + "," + 
+									rs.getString("extra_description") + "," +
+									rs.getDouble("Net_Cost") + "," +
+									rs.getDouble("price_1") + "," +
+									rs.getDouble("price_2") + "," +
+									rs.getString("group_1") + "," +
+									rs.getString("group_2") + "," +
+									rs.getString("supplier_code") + "," +
 									rs.getString("vat_switch") + "\n"
 									);
 			}
