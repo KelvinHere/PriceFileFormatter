@@ -8,14 +8,15 @@ public class Gui {
 	final static int FRAME_WIDTH = 1280;
 	final static int FRAME_HEIGHT = 720;
 	
+	JFrame frame;
 	private CardSelectFiles cardSelectFiles;
 	private CardOutput cardOutput;
 	private JTabbedPane tabbedPane;
 
 	// Files
-	final static String FILE_SELECT = "Select Files";
-    final static String DATA_SELECT = "Select Data";
-    final static String PROCESSED_DATA = "Output";
+	final static String FILE_SELECT = "1, Select Files";
+    final static String DATA_SELECT = "2, Select Data";
+    final static String PROCESSED_DATA = "3, Output";
     
     PriceFileFormatter priceFileFormatter;
     
@@ -37,13 +38,14 @@ public class Gui {
         tabbedPane.addTab(FILE_SELECT, cardSelectFiles);
         tabbedPane.addTab(PROCESSED_DATA, cardOutput);
         
+        tabbedPane.setEnabledAt(1, false);
         pane.add(tabbedPane, BorderLayout.CENTER);
     }
  
     
     private void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("Price File Formatter");
+        frame = new JFrame("Price File Formatter");
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -53,10 +55,12 @@ public class Gui {
     
     
     public void switchToCardSelectFiles() {
+    	tabbedPane.setEnabledAt(1, false);
     	tabbedPane.setSelectedComponent(cardSelectFiles);
     }
     
     public void switchToCardOutput() {
+    	tabbedPane.setEnabledAt(0, false);
     	tabbedPane.setSelectedComponent(cardOutput);
     }
  
@@ -86,5 +90,10 @@ public class Gui {
     
     public CardOutput getCardOutput() {
     	return cardOutput;
+    }
+    
+    
+    public void closeGUI() {
+    	frame.dispose();
     }
 }

@@ -10,7 +10,6 @@ public class PriceFileFormatter {
 	private String csvImportFile = "data/sample-products.csv";
 	private String csvSupplierFile = "data/sample-suppliers.csv";
 	private String csvOutputFile = "data/sample-output.csv";
-	private String selectedSupplier;
 	private final boolean SHOW_DB_GUI = true;
 	private Connection conn;
 	private Gui gui;
@@ -23,6 +22,7 @@ public class PriceFileFormatter {
 		
 	
 	public void getFiles() {
+		// Stage 1 - Get files to process
 		conn = Database.connect();
 		// Create import & supplier tables and populate
 		ModelImport.importItems(conn, csvImportFile);
@@ -38,7 +38,7 @@ public class PriceFileFormatter {
 	
 	
 	public void processFiles(String supplier) {
-		// Create output table in database
+		// Stage 2 - Process selected files
 		ModelOutput modelOutput = new ModelOutput(conn, csvOutputFile, supplier);
 		ResultSet rs = modelOutput.getOutputData();
 		gui.getCardOutput().updateOutputField(rs);
@@ -51,9 +51,22 @@ public class PriceFileFormatter {
 		manager.connect(conn);
 		manager.start();
 	}
+	
+	
+	public void resetSelf() {
+		String sql = "DROP SCHEMA PUBLIC CASCADE";
+		SqlHelper.execute(conn, sql);
+		gui.closeGUI();
+		gui = null;
+		conn = null;
+		csvImportFile = "data/sample-products.csv";
+		csvSupplierFile = "data/sample-suppliers.csv";
+		csvOutputFile = "data/sample-output.csv";
+		getFiles();
+	}
 
 	
-	// Getters / Setters
+	// Getters & Setters
 	public String getCsvImportFile() {
 		return csvImportFile;
 	}
