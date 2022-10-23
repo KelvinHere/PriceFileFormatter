@@ -30,7 +30,9 @@ public class CsvImportData {
 				String sql = String.format("INSERT INTO %s(%s) VALUES(%s)", tableName.toString(), fields, sqlValues);
 				ps = conn.prepareStatement(sql);
 				for (int i=0; i < numOfFields; i++) {
-					ps.setString(i+1, item[i]);
+					// Replaced unwanted characters before insertion
+					String currentItem = cleanImportedItem(item[i]);
+					ps.setString(i+1, currentItem);
 				}
 				ps.execute();
 			}
@@ -58,5 +60,14 @@ public class CsvImportData {
 		String sqlValues = "?, ".repeat(numOfFields);
 		sqlValues = sqlValues.substring(0, (sqlValues.length() - 2));
 		return sqlValues;
+	}
+	
+	
+	private static String cleanImportedItem(String currentItem) {
+		// Basic cleaning of string
+		String item = currentItem;
+		item = item.replace(",", "-");
+		item = item.replace("\"", "");
+		return item;
 	}
 }

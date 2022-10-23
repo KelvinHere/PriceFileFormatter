@@ -17,8 +17,11 @@ class ModelSupplierTest {
 	Enum<?> table = Tables.SUPPLIER;
 
 	@AfterEach
-	void tearDown() throws SQLException {
-		conn.close();
+	void after() throws SQLException {
+		// Drop database
+		String sql = "DROP SCHEMA PUBLIC CASCADE";
+		SqlHelper.execute(conn, sql);
+		ModelOutput modelOutput = null;
 	}
 	
 	@Test

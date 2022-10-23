@@ -13,6 +13,7 @@ public class PriceFileFormatter {
 	private final boolean SHOW_DB_GUI = true;
 	private Connection conn;
 	private Gui gui;
+	ModelOutput modelOutput;
 	
 	
 	public static void main(String[] args) {
@@ -39,7 +40,7 @@ public class PriceFileFormatter {
 	
 	public void processFiles(String supplier) {
 		// Stage 2 - Process selected files
-		ModelOutput modelOutput = new ModelOutput(conn, csvOutputFile, supplier);
+		modelOutput = new ModelOutput(conn, csvOutputFile, supplier);
 		ResultSet rs = modelOutput.getOutputData();
 		gui.getCardOutput().updateOutputField(rs);
 	}
@@ -63,6 +64,11 @@ public class PriceFileFormatter {
 		csvSupplierFile = "data/sample-suppliers.csv";
 		csvOutputFile = "data/sample-output.csv";
 		getFiles();
+	}
+	
+	
+	public void createOutputCsv() {
+		modelOutput.createCsv(csvOutputFile);
 	}
 
 	

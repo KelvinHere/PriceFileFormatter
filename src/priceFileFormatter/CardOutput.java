@@ -15,6 +15,7 @@ public class CardOutput extends JPanel {
 	private static final long serialVersionUID = 1L;
 	JTextArea outputField;
 	JButton restartButton;
+	JButton saveButton;
 	PriceFileFormatter priceFileFormatter;
 	Connection conn;
 		
@@ -37,45 +38,46 @@ public class CardOutput extends JPanel {
 		outputPanel.add(outputField);
 		mainPanel.add(BorderLayout.CENTER, outputPanel);
 		
-		// Restart button
+		// Buttons
 		JPanel buttonPanel = new JPanel();
+		saveButton = new JButton("Save");
+		buttonPanel.add(saveButton);
 		restartButton = new JButton("Restart");
 		buttonPanel.add(restartButton);
 		mainPanel.add(BorderLayout.NORTH, buttonPanel);
+		
+
 	}
 	
 	
 	public void setListeners() {
 		restartButton.addActionListener(new ResetButtonListener());
+		saveButton.addActionListener(new SaveButtonListener());
 	}
 	
 	
-	private class ResetButtonListener implements ActionListener {
+	private class SaveButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("df");
-			priceFileFormatter.resetSelf();
+			priceFileFormatter.createOutputCsv();
 		}
 		
 	}
 	
 	
+	private class ResetButtonListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			priceFileFormatter.resetSelf();
+		}
+		
+	}
+
+	
 	public void updateOutputField(ResultSet rs) {
 		outputField.setText("");
 		try {
+			outputField.append(ResultLineToCSV.getHeaders(rs));
 			while (rs.next() ) {
-				outputField.append(rs.getString("abbrev_description") + "," +
-									rs.getString("their_sku") + "," +
-									rs.getString("our_sku") + "," +
-									rs.getString("description") + "," + 
-									rs.getString("extra_description") + "," +
-									rs.getDouble("Net_Cost") + "," +
-									rs.getDouble("price_1") + "," +
-									rs.getDouble("price_2") + "," +
-									rs.getString("group_1") + "," +
-									rs.getString("group_2") + "," +
-									rs.getString("supplier_code") + "," +
-									rs.getString("vat_switch") + "\n"
-									);
+				outputField.append(ResultLineToCSV.convert(rs));
 			}
 		} catch (SQLException e) {
 			outputField.setText("Error reading results");

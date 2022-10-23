@@ -1,5 +1,8 @@
 package priceFileFormatter;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -115,6 +118,24 @@ public class ModelOutput {
 	
 	public HashMap<String, String> getSupplierHashMap() {
 		return supplierData;
+	}
+	
+	
+	public void createCsv(String location) {
+		ResultSet rs = getOutputData();
+		try {
+			FileWriter outputFile = new FileWriter(String.format("%s", location));
+			outputFile.write(ResultLineToCSV.getHeaders(rs));
+			while (rs.next()) {
+				outputFile.write(ResultLineToCSV.convert(rs));
+			}
+			outputFile.flush();
+			outputFile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
