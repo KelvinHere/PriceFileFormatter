@@ -60,6 +60,9 @@ public class ModelOutput {
 								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION, NET_COST "
 								+ "from %s", Tables.OUTPUT, Tables.IMPORT);
 		SqlHelper.execute(conn, sql);
+		
+		// Remove unwanted characters and patterns from their description
+		cleanTheirDescription();
 
 		// Add prefix to our_sku
 		sql = String.format("UPDATE output SET our_sku = '%s ' + their_sku", supplierData.get("sku_prefix"));
@@ -92,6 +95,14 @@ public class ModelOutput {
 		
 		// Price 2 = Net Cost * Mark-up 2 * Vat
 		sql = String.format("UPDATE output SET price_2 = output.net_cost * %s * %s", supplierData.get("markup_2"), supplierData.get("vat"));
+		SqlHelper.execute(conn, sql);
+	}
+	
+	
+	private void cleanTheirDescription() {
+		// Remove duplicate spaces
+		String sql = "UPDATE output SET their_description = REGEXP_REPLACE(their_description, '[ ]{2,}', ' ')";
+		System.out.println(sql);
 		SqlHelper.execute(conn, sql);
 	}
 	

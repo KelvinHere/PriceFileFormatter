@@ -13,7 +13,7 @@ import javax.swing.*;
 public class CardOutput extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	JTextArea outputField;
+	JTextArea outputTextArea;
 	JButton restartButton;
 	JButton saveButton;
 	PriceFileFormatter priceFileFormatter;
@@ -34,8 +34,9 @@ public class CardOutput extends JPanel {
 		
 		// Output field
 		JPanel outputPanel = new JPanel();
-		outputField = new JTextArea("Results Here");
-		outputPanel.add(outputField);
+		outputTextArea = new JTextArea("Results Here");
+		JScrollPane scroll = new JScrollPane(outputTextArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		outputPanel.add(scroll);
 		mainPanel.add(BorderLayout.CENTER, outputPanel);
 		
 		// Buttons
@@ -73,14 +74,14 @@ public class CardOutput extends JPanel {
 
 	
 	public void updateOutputField(ResultSet rs) {
-		outputField.setText("");
+		outputTextArea.setText("");
 		try {
-			outputField.append(ResultLineToCSV.getHeaders(rs));
+			outputTextArea.append(ResultLineToCSV.getHeaders(rs));
 			while (rs.next() ) {
-				outputField.append(ResultLineToCSV.convert(rs));
+				outputTextArea.append(ResultLineToCSV.convert(rs));
 			}
 		} catch (SQLException e) {
-			outputField.setText("Error reading results");
+			outputTextArea.setText("Error reading results");
 			e.printStackTrace();
 		}
 	}
