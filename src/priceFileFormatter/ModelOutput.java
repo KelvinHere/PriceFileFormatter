@@ -102,7 +102,6 @@ public class ModelOutput {
 	private void cleanTheirDescription() {
 		// Remove duplicate spaces
 		String sql = "UPDATE output SET their_description = REGEXP_REPLACE(their_description, '[ ]{2,}', ' ')";
-		System.out.println(sql);
 		SqlHelper.execute(conn, sql);
 	}
 	

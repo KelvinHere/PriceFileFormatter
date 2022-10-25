@@ -17,6 +17,7 @@ class ModelOutputTest {
 	private static final String SAMPLE_OUTPUT_CSV = "data/sample-output.csv";
 	private static final String DEFAULT_SUPPLIER = "Flair";
 	private static final String THEIR_KNOWN_SKU = "AYO8HRP50CBRBC";
+	private static final String SKU_FOR_ITEM_WITH_EXTRA_WHITE_SPACES = "AYO8RP45SC";
 	
 	private static final String EXPECTED_SKU = "FLA AYO8HRP50CBRBC";
 	private static final String EXPECTED_DESCRIPTION = "• AYO 8MM HINGE ROTATING DEFLECTOR PANEL 500MM BRUSHED BRASS";
@@ -27,6 +28,9 @@ class ModelOutputTest {
 	private static final String EXPECTED_GROUP_2 = "FLA";
 	private static final Double EXPECTED_PRICE_1 = 167.89;
 	private static final Double EXPECTED_PRICE_2 = 154.98;
+	private static final String EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES = "AYO 8MM ROTATING            PANEL 450MM SILVER-R8MM (C)";
+	private static final String EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES_REMOVED = "AYO 8MM ROTATING PANEL 450MM SILVER-R8MM (C)";
+	
 	
 	private static final String FOREIGN_SUPPLIER_NAME = "Flair";
 	private static final String FOREIGN_SUPPLIER_CODE = "FL01";
@@ -136,6 +140,29 @@ class ModelOutputTest {
 		HashMap<String, String> actualData = modelOutput.getSupplierHashMap();
 		
 		assertTrue(actualData.equals(expectedData));
+	}
+	
+	
+	@Test
+	void testOutputDescriptionRemovesExtraWhiteSpaces() throws SQLException {
+		Connection conn = setup();
+		
+		// Get item from importTable
+		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, SKU_FOR_ITEM_WITH_EXTRA_WHITE_SPACES);
+		ResultSet rs = SqlHelper.query(conn, sql);
+		rs.next();
+		String actualImportDescription = rs.getString("PRODUCT_DESCRIPTION");
+		assertEquals(actualImportDescription, EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES);
+		rs = null;
+		
+		// Get item from outputTable
+		sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, SKU_FOR_ITEM_WITH_EXTRA_WHITE_SPACES);
+		rs = SqlHelper.query(conn, sql);
+		rs.next();
+		String actualOutputDescription = rs.getString("their_description");
+		assertEquals(actualOutputDescription, EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES_REMOVED);
+		
+		
 	}
 
 	
