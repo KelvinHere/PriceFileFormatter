@@ -11,7 +11,7 @@ class PriceFileFormatterTest {
 	
 	Connection conn;
 	ModelOutput modelOutput;
-
+/*
 	@AfterEach
 	void tearDown() throws Exception {
 	}
@@ -20,5 +20,5 @@ class PriceFileFormatterTest {
 	void test() {
 		fail("Not yet implemented");
 	}
-
+*/
 }

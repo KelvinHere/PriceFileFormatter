@@ -19,19 +19,19 @@ public class ModelOutput {
 	private Connection conn;
 	
 	private String model = String.format("CREATE TABLE IF NOT EXISTS output("
-			+ "abbrev_description VARCHAR(50), "
-			+ "their_sku VARCHAR(50), "
-			+ "our_sku VARCHAR(50), "
-			+ "description VARCHAR(255), "
-			+ "extra_description VARCHAR(255), "
-			+ "Net_Cost DECIMAL(15,2), "
-			+ "price_1 DECIMAL(15,2), "
-			+ "price_2 DECIMAL(15,2), "
-			+ "group_1 VARCHAR(4), "
-			+ "group_2 VARCHAR(4), "
-			+ "supplier_code VARCHAR(4), "
-			+ "vat_switch VARCHAR(1), "
-			+ "their_description VARCHAR(255))");
+			+ OutputFields.ABBREV_DESCRIPTION.lowerCase() + " VARCHAR(50), "
+			+ OutputFields.THEIR_SKU.lowerCase() + " VARCHAR(50), "
+			+ OutputFields.OUR_SKU.lowerCase() + " VARCHAR(50), "
+			+ OutputFields.DESCRIPTION.lowerCase() + " VARCHAR(255), "
+			+ OutputFields.EXTRA_DESCRIPTION.lowerCase() + " VARCHAR(255), "
+			+ OutputFields.NET_COST.lowerCase() + " DECIMAL(15,2), "
+			+ OutputFields.PRICE_1.lowerCase() + " DECIMAL(15,2), "
+			+ OutputFields.PRICE_2.lowerCase() + " DECIMAL(15,2), "
+			+ OutputFields.GROUP_1.lowerCase() + " VARCHAR(4), "
+			+ OutputFields.GROUP_2.lowerCase() + " VARCHAR(4), "
+			+ OutputFields.SUPPLIER_CODE.lowerCase() + " VARCHAR(4), "
+			+ OutputFields.VAT_SWITCH.lowerCase() + " VARCHAR(1), "
+			+ OutputFields.THEIR_DESCRIPTION.lowerCase() + " VARCHAR(255))");
 
 	
 	public ModelOutput(Connection conn, String csvOutputFile, String supplier) {
@@ -65,7 +65,7 @@ public class ModelOutput {
 		cleanTheirDescription();
 
 		// Add prefix to our_sku
-		sql = String.format("UPDATE output SET our_sku = '%s ' + their_sku", supplierData.get("sku_prefix"));
+		sql = String.format("UPDATE %s SET our_sku = '%s ' + their_sku", Tables.OUTPUT, supplierData.get("sku_prefix"));
 		SqlHelper.execute(conn, sql);
 		
 		// Populate our description (Up to 58 characters and prefixed with bullet point + space)

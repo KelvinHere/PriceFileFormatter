@@ -17,7 +17,7 @@ class ModelImportTest {
 
 	private static final String SAMPLE_ITEMS_CSV = "data/sample-products.csv";
 	private static final String FIRST_IMPORTED_SKU = "AYO8RP45SC";
-	private static final String FIRST_IMPORTED_PRODUCT_DESCRIPTION = "AYO 8MM ROTATING PANEL 450MM SILVER-R8MM (C)";
+	private static final String FIRST_IMPORTED_PRODUCT_DESCRIPTION = "AYO 8MM ROTATING            PANEL 450MM SILVER-R8MM (C)";
 	private static final String FIRST_IMPORTED_NET_COST = "131.00";
 	
 	private static final String LAST_IMPORTED_SKU = "BP5EWH";
@@ -26,7 +26,6 @@ class ModelImportTest {
 	private static final int TOTAL_ITEMS_IN_FILE = 66;
 	
 	Connection conn;
-	Enum<?> importTable = Tables.IMPORT;
 
 	
 	@AfterEach
@@ -42,9 +41,9 @@ class ModelImportTest {
 		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get item from output
-		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", importTable, FIRST_IMPORTED_SKU);
+		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, FIRST_IMPORTED_SKU);
 		ResultSet rs = SqlHelper.query(conn, sql);
-		HashMap<String, String> unpackedRs = unpackRs(rs);
+		HashMap<String, String> unpackedRs = resultSetToHashMap(rs);
 		
 		assertEquals(FIRST_IMPORTED_SKU, unpackedRs.get("sku"));
 		assertEquals(FIRST_IMPORTED_PRODUCT_DESCRIPTION, unpackedRs.get("description"));
@@ -59,9 +58,9 @@ class ModelImportTest {
 		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get item from output
-		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", importTable, LAST_IMPORTED_SKU);
+		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, LAST_IMPORTED_SKU);
 		ResultSet rs = SqlHelper.query(conn, sql);
-		HashMap<String, String> unpackedRs = unpackRs(rs);
+		HashMap<String, String> unpackedRs = resultSetToHashMap(rs);
 		
 		assertEquals(LAST_IMPORTED_SKU, unpackedRs.get("sku"));
 		assertEquals(LAST_IMPORTED_PRODUCT_DESCRIPTION, unpackedRs.get("description"));
@@ -76,7 +75,7 @@ class ModelImportTest {
 		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get amount of items in SUPPLIER_TABLE
-		String sql = String.format("SELECT COUNT(*) AS total FROM %s", importTable);
+		String sql = String.format("SELECT COUNT(*) AS total FROM %s", Tables.IMPORT);
 		ResultSet rs = SqlHelper.query(conn, sql);
 		rs.next();
 		int actualItemCount = rs.getInt("total");
@@ -85,7 +84,7 @@ class ModelImportTest {
 	}
 
 	
-	private HashMap<String, String> unpackRs(ResultSet rs) throws SQLException {
+	private HashMap<String, String> resultSetToHashMap(ResultSet rs) throws SQLException {
 		HashMap<String, String> results = new HashMap<>();
 		
 		if (rs.next()) {

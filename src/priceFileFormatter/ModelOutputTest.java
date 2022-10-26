@@ -64,10 +64,10 @@ class ModelOutputTest {
 		String extraDescription = rs.getString("extra_description");
 		String abbreviatedDescription = rs.getString("abbrev_description");
 		String vatSwitch = rs.getString("vat_switch");
-		String group1 = rs.getString("group_1");
-		String group2 = rs.getString("group_2");
-		Double price1 = rs.getDouble("price_1");
-		Double price2 = rs.getDouble("price_2");
+		String group1 = rs.getString(OutputFields.GROUP_1.lowerCase());
+		String group2 = rs.getString(OutputFields.GROUP_2.lowerCase());
+		Double price1 = rs.getDouble(OutputFields.PRICE_1.lowerCase());
+		Double price2 = rs.getDouble(OutputFields.PRICE_2.lowerCase());
 		
 		assertEquals(THEIR_KNOWN_SKU, theirSku);
 		assertEquals(EXPECTED_SKU, formattedSku);
@@ -91,8 +91,8 @@ class ModelOutputTest {
 		ResultSet rs = SqlHelper.query(conn, sql);
 
 		rs.next();
-		Double actualPrice1 = rs.getDouble("price_1");
-		Double actualPrice2 = rs.getDouble("price_2");
+		Double actualPrice1 = rs.getDouble(OutputFields.PRICE_1.lowerCase());
+		Double actualPrice2 = rs.getDouble(OutputFields.PRICE_2.lowerCase());
 		
 		assertEquals(EXPECTED_PRICE_1, actualPrice1);
 		assertEquals(EXPECTED_PRICE_2, actualPrice2);
@@ -159,7 +159,7 @@ class ModelOutputTest {
 		sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, SKU_FOR_ITEM_WITH_EXTRA_WHITE_SPACES);
 		rs = SqlHelper.query(conn, sql);
 		rs.next();
-		String actualOutputDescription = rs.getString("their_description");
+		String actualOutputDescription = rs.getString(OutputFields.THEIR_DESCRIPTION.lowerCase());
 		assertEquals(actualOutputDescription, EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES_REMOVED);
 		
 		

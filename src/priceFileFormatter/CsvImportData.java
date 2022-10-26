@@ -32,7 +32,7 @@ public class CsvImportData {
 				for (int i=0; i < numOfFields; i++) {
 					// Replaced unwanted characters that could interfere with CSV format
 					String currentItem = cleanImportedItem(item[i]);
-					ps.setString(i+1, item[i]);
+					ps.setString(i+1, currentItem);
 				}
 				ps.execute();
 			}
