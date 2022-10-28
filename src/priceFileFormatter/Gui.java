@@ -11,11 +11,12 @@ public class Gui {
 	JFrame frame;
 	private CardSelectFiles cardSelectFiles;
 	private CardOutput cardOutput;
+	private CardSelectData cardSelectData;
 	private JTabbedPane tabbedPane;
 
 	// Files
 	final static String FILE_SELECT = "1, Select Files";
-    final static String DATA_SELECT = "2, Select Data";
+    final static String SELECT_DATA = "2, Select Data";
     final static String PROCESSED_DATA = "3, Output";
     
     PriceFileFormatter priceFileFormatter;
@@ -31,14 +32,17 @@ public class Gui {
         tabbedPane = new JTabbedPane();
         // Card 1 - Select Files
         cardSelectFiles = new CardSelectFiles(priceFileFormatter);
+        // Card 2 - Select Files
+        cardSelectData = new CardSelectData(priceFileFormatter);
         // Card 3 - Output
         cardOutput = new CardOutput(priceFileFormatter);
 
         // Add cards to pane
         tabbedPane.addTab(FILE_SELECT, cardSelectFiles);
+        tabbedPane.addTab(SELECT_DATA, cardSelectData);
         tabbedPane.addTab(PROCESSED_DATA, cardOutput);
         
-        tabbedPane.setEnabledAt(1, false);
+        //tabbedPane.setEnabledAt(1, false);
         pane.add(tabbedPane, BorderLayout.CENTER);
     }
  
@@ -59,9 +63,15 @@ public class Gui {
     	tabbedPane.setSelectedComponent(cardSelectFiles);
     }
     
+    
     public void switchToCardOutput() {
     	tabbedPane.setEnabledAt(0, false);
     	tabbedPane.setSelectedComponent(cardOutput);
+    }
+    
+    
+    public void switchToCardSelectData() {
+    	tabbedPane.setSelectedComponent(cardSelectData);
     }
  
     
@@ -90,6 +100,11 @@ public class Gui {
     
     public CardOutput getCardOutput() {
     	return cardOutput;
+    }
+    
+    
+    public CardSelectData getCardSelectData() {
+    	return cardSelectData;
     }
     
     

@@ -13,7 +13,9 @@ public class PriceFileFormatter {
 	private final boolean SHOW_DB_GUI = true;
 	private Connection conn;
 	private Gui gui;
+	private String selectedSupplier;
 	ModelOutput modelOutput;
+	ModelImport modelImport;
 	
 	
 	public static void main(String[] args) {
@@ -26,7 +28,7 @@ public class PriceFileFormatter {
 		// Stage 1 - Get files to process
 		conn = Database.connect();
 		// Create import & supplier tables and populate
-		ModelImport.importItems(conn, csvImportFile);
+		modelImport = new ModelImport(conn, csvImportFile);
 		ModelSupplier.importSuppliers(conn, csvSupplierFile);
 		
 		if (SHOW_DB_GUI)
@@ -38,11 +40,25 @@ public class PriceFileFormatter {
 	}
 	
 	
-	public void processFiles(String supplier) {
-		// Stage 2 - Process selected files
-		modelOutput = new ModelOutput(conn, csvOutputFile, supplier);
-		ResultSet rs = modelOutput.getOutputData();
+	public void selectData(String selectedSupplier) {
+		// Stage 2 - Select columns with needed data to create output & update gui
+		this.selectedSupplier = selectedSupplier;
+		CardSelectData cardSelectData = gui.getCardSelectData();
+		ResultSet rs = modelImport.getAllItemsInTable();
+		cardSelectData.updateDataField(rs);
+	}
+	
+	
+	public void processFiles() {
+		// Stage 3 - Process selected files
+		modelOutput = new ModelOutput(conn, csvOutputFile, selectedSupplier);
+		ResultSet rs = modelOutput.getAllItemsInTable();
 		gui.getCardOutput().updateOutputField(rs);
+	}
+	
+	
+	public void createOutputCsv() {
+		modelOutput.createCsv(csvOutputFile);
 	}
 	
 	
@@ -60,17 +76,13 @@ public class PriceFileFormatter {
 		gui.closeGUI();
 		gui = null;
 		conn = null;
+		modelOutput = null;
+		modelImport = null;
 		csvImportFile = "data/sample-products.csv";
 		csvSupplierFile = "data/sample-suppliers.csv";
 		csvOutputFile = "data/sample-output.csv";
 		getFiles();
 	}
-	
-	
-	public void createOutputCsv() {
-		modelOutput.createCsv(csvOutputFile);
-	}
-
 	
 	// Getters & Setters
 	public String getCsvImportFile() {

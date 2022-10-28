@@ -132,12 +132,12 @@ public class ModelOutput {
 	
 	
 	public void createCsv(String location) {
-		ResultSet rs = getOutputData();
+		ResultSet rs = getAllItemsInTable();
 		try {
 			FileWriter outputFile = new FileWriter(String.format("%s", location));
-			outputFile.write(ResultLineToCSV.getHeaders(rs));
+			outputFile.write(ResultToCSV.getHeaders(rs, true));
 			while (rs.next()) {
-				outputFile.write(ResultLineToCSV.convert(rs));
+				outputFile.write(ResultToCSV.resultForOutputFile(rs));
 			}
 			outputFile.flush();
 			outputFile.close();
@@ -149,7 +149,7 @@ public class ModelOutput {
 	}
 	
 	
-	public ResultSet getOutputData() {
+	public ResultSet getAllItemsInTable() {
 		String sql = String.format("SELECT * FROM %s ORDER BY description ASC", Tables.OUTPUT);
 		ResultSet rs = SqlHelper.query(conn, sql); 
 		return rs;

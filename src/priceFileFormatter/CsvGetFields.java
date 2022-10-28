@@ -6,8 +6,8 @@ import java.io.IOException;
 
 public class CsvGetFields {
 	
-	public static String get(String fileLocation) {
-		// Create SQL for creation of DB importTable and fields from first line of CSV
+	public static String getSqlToCreateTable(String fileLocation) {
+		// Creates SQL statement for creation of TABLE and FIELDS from first line of CSV
 		String tableFieldsSql = null;
 		String line = "";
 		
@@ -33,5 +33,22 @@ public class CsvGetFields {
 		}
 		
 		return tableFieldsSql;
+	}
+	
+	
+	public static String[] getColumnNames(String fileLocation) {
+		// Creates SQL statement for creation of TABLE and FIELDS from first line of CSV
+		String[] columnNames = {"Error : No Columns Found"};
+		try {
+			// Get array of CSV file headers
+			BufferedReader br = new BufferedReader(new FileReader(fileLocation));
+			String line = br.readLine();
+			columnNames = line.split(",");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return columnNames;
 	}
 }

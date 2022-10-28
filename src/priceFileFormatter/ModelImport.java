@@ -1,20 +1,40 @@
 package priceFileFormatter;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 
 public class ModelImport {
-	private static final Enum<?> IMPORT_TABLE = Tables.IMPORT; 
+	private String[] columnNames;
+	private Connection conn;
 	
-	public static void importItems(Connection conn, String fileLocation) {
-		// Create importTable from CSV
-		String fieldsSql = String.format("CREATE TABLE %s(%s)", IMPORT_TABLE, CsvGetFields.get(fileLocation));
+	
+	public ModelImport(Connection conn, String fileLocation) {
+		this.conn = conn;
+		// Get column names from import file
+		columnNames = CsvGetFields.getColumnNames(fileLocation);
+
+		// Create IMPORT table from CSV file
+		String fieldsSql = String.format("CREATE TABLE %s(%s)", Tables.IMPORT, CsvGetFields.getSqlToCreateTable(fileLocation));
 		SqlHelper.execute(conn, fieldsSql);
 		
-		// Import data into fields
-		CsvImportData.insertCsvIntoDatabase(conn, fileLocation, IMPORT_TABLE);
+		// Import data into fields of IMPORT table
+		CsvImportData.insertCsvIntoDatabase(conn, fileLocation, Tables.IMPORT);
 	}
 	
-	public static Enum<?> getTableName() {
-		return IMPORT_TABLE;
+	
+	public ResultSet getAllItemsInTable() {
+		String sql = String.format("SELECT * FROM %s", Tables.IMPORT);
+		ResultSet rs = SqlHelper.query(conn, sql); 
+		return rs;
+	}
+	
+	
+	public Enum<?> getTableName() {
+		return Tables.IMPORT;
+	}
+	
+	
+	public String[] getColumnNames() {
+		return columnNames;
 	}
 }

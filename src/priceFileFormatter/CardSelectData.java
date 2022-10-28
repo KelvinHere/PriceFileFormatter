@@ -10,17 +10,17 @@ import java.sql.SQLException;
 import javax.swing.*;
 
 
-public class CardOutput extends JPanel {
-	
+public class CardSelectData extends JPanel {
 	private static final long serialVersionUID = 1L;
-	JTextArea outputTextArea;
+	private String[] columnNames;
+	JTextArea importsTextArea;
 	JButton restartButton;
-	JButton saveButton;
+	JButton nextButton;
 	PriceFileFormatter priceFileFormatter;
 	Connection conn;
 		
 	
-	public CardOutput(PriceFileFormatter priceFileFormatter) {
+	public CardSelectData(PriceFileFormatter priceFileFormatter) {
 		this.priceFileFormatter = priceFileFormatter;
 		this.conn = priceFileFormatter.getConnection();
 		buildSwingComponents();
@@ -32,17 +32,17 @@ public class CardOutput extends JPanel {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		this.add(mainPanel);
 		
-		// Output field
+		// Data field
 		JPanel outputPanel = new JPanel();
-		outputTextArea = new JTextArea("Results Here");
-		JScrollPane scroll = new JScrollPane(outputTextArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		importsTextArea = new JTextArea("Results Here");
+		JScrollPane scroll = new JScrollPane(importsTextArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		outputPanel.add(scroll);
 		mainPanel.add(BorderLayout.CENTER, outputPanel);
 		
 		// Buttons
 		JPanel buttonPanel = new JPanel();
-		saveButton = new JButton("Save");
-		buttonPanel.add(saveButton);
+		nextButton = new JButton("Next");
+		buttonPanel.add(nextButton);
 		restartButton = new JButton("Restart");
 		buttonPanel.add(restartButton);
 		mainPanel.add(BorderLayout.NORTH, buttonPanel);
@@ -52,20 +52,21 @@ public class CardOutput extends JPanel {
 	
 	
 	public void setListeners() {
-		restartButton.addActionListener(new ResetButtonListener());
-		saveButton.addActionListener(new SaveButtonListener());
+		restartButton.addActionListener(new RestartButtonListener());
+		nextButton.addActionListener(new NextButtonListener());
 	}
 	
 	
-	private class SaveButtonListener implements ActionListener {
+	private class NextButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			priceFileFormatter.createOutputCsv();
+			priceFileFormatter.processFiles();
+			priceFileFormatter.getGui().switchToCardOutput();
 		}
 		
 	}
 	
 	
-	private class ResetButtonListener implements ActionListener {
+	private class RestartButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			priceFileFormatter.resetSelf();
 		}
@@ -73,16 +74,21 @@ public class CardOutput extends JPanel {
 	}
 
 	
-	public void updateOutputField(ResultSet rs) {
-		outputTextArea.setText("");
+	public void updateDataField(ResultSet rs) {
+		importsTextArea.setText("");
 		try {
-			outputTextArea.append(ResultToCSV.getHeaders(rs, true));
+			importsTextArea.append(ResultToCSV.getHeaders(rs, true));
 			while (rs.next() ) {
-				outputTextArea.append(ResultToCSV.resultForOutputFile(rs));
+				importsTextArea.append(ResultToCSV.resultFromImportTable(rs));
 			}
 		} catch (SQLException e) {
-			outputTextArea.setText("Error reading results");
+			importsTextArea.setText("Error reading results");
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void setColumnNames(String[] columnNames) {
+		this.columnNames = columnNames;
 	}
 }

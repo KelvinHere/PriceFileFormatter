@@ -10,13 +10,14 @@ import java.sql.SQLException;
 
 
 public class CsvImportData {
+	// Imports CSV data from a file into a table
 	
 	public static void insertCsvIntoDatabase(Connection conn, String fileLocation, Enum<?> tableName) {
 		String line = "";
 		String splitBy = ",";
 		
 		try {
-			// Open buffer and collect number of fields present in file this also disposes of first line
+			// Open file - get number of fields and replace spaces in names - this also disposes of first line
 			BufferedReader br = new BufferedReader(new FileReader(fileLocation));
 			String fields = br.readLine().replace(" ", "_");;
 			int numOfFields = numberOfFields(fields);

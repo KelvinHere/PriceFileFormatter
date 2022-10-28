@@ -38,7 +38,7 @@ class ModelImportTest {
 	void importTableIsPopulatedFirstItem() throws SQLException {
 		conn = Database.connect(); 
 		// import sample items to import importTable
-		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
+		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get item from output
 		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, FIRST_IMPORTED_SKU);
@@ -55,7 +55,7 @@ class ModelImportTest {
 	void importTableIsPopulatedLastItem() throws SQLException {
 		conn = Database.connect(); 
 		// import sample items to import importTable
-		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
+		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get item from output
 		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, LAST_IMPORTED_SKU);
@@ -72,7 +72,7 @@ class ModelImportTest {
 	void correctAmountOfItemsImported() throws SQLException {
 		conn = Database.connect(); 
 		// import sample items to import importTable
-		ModelImport.importItems(conn, SAMPLE_ITEMS_CSV);
+		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get amount of items in SUPPLIER_TABLE
 		String sql = String.format("SELECT COUNT(*) AS total FROM %s", Tables.IMPORT);
