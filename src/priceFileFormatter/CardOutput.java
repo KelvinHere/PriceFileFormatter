@@ -78,7 +78,7 @@ public class CardOutput extends JPanel {
 		try {
 			outputTextArea.append(ResultToCSV.getHeaders(rs, true));
 			while (rs.next() ) {
-				outputTextArea.append(ResultToCSV.resultForOutputFile(rs));
+				outputTextArea.append(ResultToCSV.convert(rs));
 			}
 		} catch (SQLException e) {
 			outputTextArea.setText("Error reading results");

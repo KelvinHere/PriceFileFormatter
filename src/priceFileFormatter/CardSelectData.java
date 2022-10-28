@@ -79,7 +79,7 @@ public class CardSelectData extends JPanel {
 		try {
 			importsTextArea.append(ResultToCSV.getHeaders(rs, true));
 			while (rs.next() ) {
-				importsTextArea.append(ResultToCSV.resultFromImportTable(rs));
+				importsTextArea.append(ResultToCSV.convert(rs));
 			}
 		} catch (SQLException e) {
 			importsTextArea.setText("Error reading results");

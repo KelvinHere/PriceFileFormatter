@@ -137,7 +137,7 @@ public class ModelOutput {
 			FileWriter outputFile = new FileWriter(String.format("%s", location));
 			outputFile.write(ResultToCSV.getHeaders(rs, true));
 			while (rs.next()) {
-				outputFile.write(ResultToCSV.resultForOutputFile(rs));
+				outputFile.write(ResultToCSV.convert(rs));
 			}
 			outputFile.flush();
 			outputFile.close();

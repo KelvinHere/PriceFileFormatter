@@ -45,7 +45,7 @@ class ModelOutputTest {
 		// Drop database
 		String sql = "DROP SCHEMA PUBLIC CASCADE";
 		SqlHelper.execute(conn, sql);
-		ModelOutput modelOutput = null;
+		modelOutput = null;
 	}
 	
 	
