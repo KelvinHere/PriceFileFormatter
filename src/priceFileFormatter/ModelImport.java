@@ -11,10 +11,10 @@ public class ModelImport {
 	public ModelImport(Connection conn, String fileLocation) {
 		this.conn = conn;
 		// Get column names from import file
-		columnNames = CsvGetFields.getColumnNames(fileLocation);
+		columnNames = CsvFileFieldsToSqlTable.getColumnNames(fileLocation);
 
 		// Create IMPORT table from CSV file
-		String fieldsSql = String.format("CREATE TABLE %s(%s)", Tables.IMPORT, CsvGetFields.getSqlToCreateTable(fileLocation));
+		String fieldsSql = String.format("CREATE TABLE %s(%s)", Tables.IMPORT, CsvFileFieldsToSqlTable.createTable(fileLocation));
 		SqlHelper.execute(conn, fieldsSql);
 		
 		// Import data into fields of IMPORT table

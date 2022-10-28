@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class CsvGetFields {
+public class CsvFileFieldsToSqlTable {
 	
-	public static String getSqlToCreateTable(String fileLocation) {
+	public static String createTable(String fileLocation) {
 		// Creates SQL statement for creation of TABLE and FIELDS from first line of CSV
 		String tableFieldsSql = null;
 		String line = "";

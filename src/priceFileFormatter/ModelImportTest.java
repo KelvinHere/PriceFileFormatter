@@ -26,11 +26,16 @@ class ModelImportTest {
 	private static final int TOTAL_ITEMS_IN_FILE = 66;
 	
 	Connection conn;
+	ModelImport modelImport;
 
 	
 	@AfterEach
 	void tearDown() throws SQLException {
+		String sql = "DROP SCHEMA PUBLIC CASCADE";
+		SqlHelper.execute(conn, sql);
 		conn.close();
+		conn = null;
+		modelImport = null; 
 	}
 
 	
@@ -38,7 +43,7 @@ class ModelImportTest {
 	void importTableIsPopulatedFirstItem() throws SQLException {
 		conn = Database.connect(); 
 		// import sample items to import importTable
-		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
+		modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get item from output
 		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, FIRST_IMPORTED_SKU);
@@ -55,7 +60,7 @@ class ModelImportTest {
 	void importTableIsPopulatedLastItem() throws SQLException {
 		conn = Database.connect(); 
 		// import sample items to import importTable
-		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
+		modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get item from output
 		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, LAST_IMPORTED_SKU);
@@ -72,7 +77,7 @@ class ModelImportTest {
 	void correctAmountOfItemsImported() throws SQLException {
 		conn = Database.connect(); 
 		// import sample items to import importTable
-		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
+		modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
 		
 		// Get amount of items in SUPPLIER_TABLE
 		String sql = String.format("SELECT COUNT(*) AS total FROM %s", Tables.IMPORT);
@@ -81,6 +86,18 @@ class ModelImportTest {
 		int actualItemCount = rs.getInt("total");
 		
 		assertEquals(TOTAL_ITEMS_IN_FILE, actualItemCount);
+	}
+	
+	
+	@Test 
+	void getAllItemsInTable() throws SQLException {
+		conn = Database.connect();
+		modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
+		
+		ResultSet rs = modelImport.getAllItemsInTable();
+		int actualItems= 0;
+		while (rs.next()) actualItems++;
+		assertEquals(TOTAL_ITEMS_IN_FILE, actualItems);
 	}
 
 	

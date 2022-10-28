@@ -9,7 +9,7 @@ public class ModelSupplier {
 	
 	public static void importSuppliers(Connection conn, String fileLocation) {
 		// Create importTable from CSV
-		String sql = String.format("CREATE TABLE %s(%s);", SUPPLIER_TABLE, CsvGetFields.getSqlToCreateTable(fileLocation));
+		String sql = String.format("CREATE TABLE %s(%s);", SUPPLIER_TABLE, CsvFileFieldsToSqlTable.createTable(fileLocation));
 		SqlHelper.execute(conn, sql);
 		
 		// Set primary key

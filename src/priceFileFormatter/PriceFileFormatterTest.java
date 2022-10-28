@@ -14,11 +14,15 @@ class PriceFileFormatterTest {
 /*
 	@AfterEach
 	void tearDown() throws Exception {
+		String sql = "DROP SCHEMA PUBLIC CASCADE";
+		SqlHelper.execute(conn, sql);
+		conn.close();
+		conn = null;
 	}
 
 	@Test
 	void test() {
-		fail("Not yet implemented");
+
 	}
 */
 }

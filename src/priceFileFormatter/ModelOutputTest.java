@@ -30,6 +30,7 @@ class ModelOutputTest {
 	private static final Double EXPECTED_PRICE_2 = 154.98;
 	private static final String EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES = "AYO 8MM ROTATING            PANEL 450MM SILVER-R8MM (C)";
 	private static final String EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES_REMOVED = "AYO 8MM ROTATING PANEL 450MM SILVER-R8MM (C)";
+	private static final int EXPECTED_ITEMS = 66;
 	
 	
 	private static final String FOREIGN_SUPPLIER_NAME = "Flair";
@@ -51,7 +52,7 @@ class ModelOutputTest {
 	
 	@Test
 	void outputTableIsPopulatedWithFormattedImportedItems() throws SQLException {
-		Connection conn = setup();
+		conn = setup();
 		
 		// Get item from output importTable
 		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, THEIR_KNOWN_SKU);
@@ -84,7 +85,7 @@ class ModelOutputTest {
 	
 	@Test
 	void outputTablePricesAreCorrect() throws SQLException {
-		Connection conn = setup();
+		conn = setup();
 		
 		// Get item from output importTable
 		String sql = String.format("SELECT * from %s WHERE their_sku = '%s';", Tables.OUTPUT, THEIR_KNOWN_SKU);
@@ -101,7 +102,7 @@ class ModelOutputTest {
 	
 	@Test
 	void canPullForeignKeyDataFromOutputItem() throws SQLException {
-		Connection conn = setup();
+		conn = setup();
 		
 		// Get item from output importTable
 		String sql = String.format("SELECT * FROM OUTPUT INNER JOIN SUPPLIER ON output.supplier_code = supplier.supplier_code WHERE their_sku = 'AYO8RP45SC';");
@@ -125,7 +126,7 @@ class ModelOutputTest {
 	
 	@Test
 	void suppliersRsToHashMapContainsCorrectData() throws SQLException{
-		Connection conn = setup();
+		conn = setup();
 		
 		HashMap<String, String> expectedData = new HashMap<>();
 		expectedData.put("supplier_name", "Flair");
@@ -145,7 +146,7 @@ class ModelOutputTest {
 	
 	@Test
 	void testOutputDescriptionRemovesExtraWhiteSpaces() throws SQLException {
-		Connection conn = setup();
+		conn = setup();
 		
 		// Get item from importTable
 		String sql = String.format("SELECT * from %s WHERE PRODUCT_CODE = '%s';", Tables.IMPORT, SKU_FOR_ITEM_WITH_EXTRA_WHITE_SPACES);
@@ -161,8 +162,17 @@ class ModelOutputTest {
 		rs.next();
 		String actualOutputDescription = rs.getString(OutputFields.THEIR_DESCRIPTION.lowerCase());
 		assertEquals(actualOutputDescription, EXPECTED_DESCRITPTION_WITH_EXTRA_WHITE_SPACES_REMOVED);
+	}
+	
+	
+	@Test 
+	void getAllItemsInTable() throws SQLException {
+		conn = setup();
 		
-		
+		ResultSet rs = modelOutput.getAllItemsInTable();
+		int actualItems= 0;
+		while (rs.next()) actualItems++;
+		assertEquals(EXPECTED_ITEMS, actualItems);
 	}
 
 	
