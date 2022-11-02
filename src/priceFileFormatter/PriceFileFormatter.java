@@ -136,4 +136,8 @@ public class PriceFileFormatter {
 	public Gui getGui() {
 		return gui;
 	}
+	
+	public ModelImport getModelImport() {
+		return modelImport;
+	}
 }

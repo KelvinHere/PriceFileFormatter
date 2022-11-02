@@ -5,7 +5,7 @@ import javax.swing.*;
 
 
 public class Gui {
-	final static int FRAME_WIDTH = 1280;
+	final static int FRAME_WIDTH = 1400;
 	final static int FRAME_HEIGHT = 720;
 	
 	JFrame frame;
