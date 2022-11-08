@@ -1,7 +1,24 @@
+/* PriceFileFormatter creates a formatted CSV price file
+ * 
+ * Inputs are 	- new supplier price file
+ * 				- existing report file (with current pricing)
+ * 
+ * User chooses data to pull from new supplier price file, this is formatted to a
+ * predetermined structure, with pricing / mark-up / formatted descriptions already
+ * applied and ready for legacy database to accept.
+ * 
+ * Outputs are 	- new CSV formatted price file to update legacy database
+ * 				- CSV file of existing items not in new price file to be deactivated if no stock remains
+ * 				- CSV file of existing items not in new price file that are in stock, to be marked down and sold
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import org.hsqldb.util.DatabaseManagerSwing;
 
@@ -14,6 +31,7 @@ public class PriceFileFormatter {
 	private Connection conn;
 	private Gui gui;
 	private String selectedSupplier;
+	private HashMap<Integer, String> dataLocations = new HashMap<>();
 	ModelOutput modelOutput;
 	ModelImport modelImport;
 	
@@ -51,7 +69,7 @@ public class PriceFileFormatter {
 	
 	public void processFiles() {
 		// Stage 3 - Process selected files
-		modelOutput = new ModelOutput(conn, csvOutputFile, selectedSupplier);
+		modelOutput = new ModelOutput(conn, csvOutputFile, selectedSupplier, dataLocations);
 		ResultSet rs = modelOutput.getAllItemsInTable();
 		gui.getCardOutput().updateOutputField(rs);
 	}
@@ -73,6 +91,7 @@ public class PriceFileFormatter {
 	public void resetSelf() {
 		String sql = "DROP SCHEMA PUBLIC CASCADE";
 		SqlHelper.execute(conn, sql);
+		dataLocations.clear();
 		gui.closeGUI();
 		gui = null;
 		conn = null;
@@ -139,5 +158,13 @@ public class PriceFileFormatter {
 	
 	public ModelImport getModelImport() {
 		return modelImport;
+	}
+	
+	public void setDataLocations(HashMap<Integer, String> locations) {
+		dataLocations = locations;
+	}
+	
+	public HashMap<Integer, String> getDataLocations() {
+		return dataLocations;
 	}
 }

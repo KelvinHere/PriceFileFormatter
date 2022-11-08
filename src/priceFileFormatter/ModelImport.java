@@ -1,3 +1,7 @@
+/* This Model dynamically creates the table for the new supplier price file.
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.sql.Connection;

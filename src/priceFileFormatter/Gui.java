@@ -1,3 +1,7 @@
+/* A tabbed GUI to house all cards in each step of the program
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.awt.*;

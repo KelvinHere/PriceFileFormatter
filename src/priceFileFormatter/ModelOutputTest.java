@@ -37,6 +37,13 @@ class ModelOutputTest {
 	private static final String FOREIGN_SUPPLIER_CODE = "FL01";
 	private static final String FOREIGN_SUPPLIER_SKU_PREFIX = "FLA";
 	
+	private static HashMap<Integer, String> DATA_LOCATIONS = new HashMap<>();
+	{
+	DATA_LOCATIONS.put(0, "PRODUCT_CODE");
+	DATA_LOCATIONS.put(1, "PRODUCT_DESCRIPTION");
+	DATA_LOCATIONS.put(2, "NET_COST");
+	}
+	
 	Connection conn;
 	ModelOutput modelOutput;
 	
@@ -180,7 +187,7 @@ class ModelOutputTest {
 		conn = Database.connect(); 
 		ModelSupplier.importSuppliers(conn, SAMPLE_SUPPLIERS_CSV);
 		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
-		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV, DEFAULT_SUPPLIER);
+		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV, DEFAULT_SUPPLIER, DATA_LOCATIONS);
 		return conn;
 	}
 }

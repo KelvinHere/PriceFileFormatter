@@ -1,3 +1,7 @@
+/* Creates the GUI for selecting CSV files
+ * 
+ */
+
 package priceFileFormatter;
 
 import javax.swing.*;

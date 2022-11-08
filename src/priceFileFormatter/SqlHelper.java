@@ -1,3 +1,14 @@
+/**
+ * SqlHelper class executes SQL statements or returns ResultSets from SQL queries
+ * 
+ * SqlHelper.execute takes an active connection and SQL string, puts this into a
+ * prepared statement and executes the statement.
+ * 
+ * SqlHelper.query takes an active connection and SQL string, puts this into a
+ * prepared statement and executes the query and returns a result set.
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.sql.Connection;

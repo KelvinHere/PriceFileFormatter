@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,13 @@ class ResultToCSVTest {
 	private static final String EXPECTED_CSV_HEADERS_IMPORT = "PRODUCT_CODE,PRODUCT_DESCRIPTION,BARCODE,CATEGORY,DISCOUNT_TYPE,NEW_RRP,NET_COST";
 	private static final String EXPECTED_CSV_HEADERS_OUTPUT = "ABBREV_DESCRIPTION,THEIR_SKU,OUR_SKU,DESCRIPTION,EXTRA_DESCRIPTION,NET_COST,PRICE_1,PRICE_2,GROUP_1,GROUP_2,SUPPLIER_CODE,VAT_SWITCH,THEIR_DESCRIPTION";
 	private static final String EXPECTED_CSV_LINE = "1700 X,TSL17070R,FLA TSL17070R,• 1700 X 700mm Slimline Rectangle Tray,,87.00,139.11,128.41,BA,FLA,FL01,I,1700 X 700mm Slimline Rectangle Tray\n";
+	
+	private static HashMap<Integer, String> DATA_LOCATIONS = new HashMap<>();
+	{
+	DATA_LOCATIONS.put(0, "PRODUCT_CODE");
+	DATA_LOCATIONS.put(1, "PRODUCT_DESCRIPTION");
+	DATA_LOCATIONS.put(2, "NET_COST");
+	}
 	
 	Connection conn;
 	ModelOutput modelOutput;
@@ -70,7 +78,7 @@ class ResultToCSVTest {
 		conn = Database.connect(); 
 		ModelSupplier.importSuppliers(conn, SAMPLE_SUPPLIERS_CSV);
 		ModelImport modelImport = new ModelImport(conn, SAMPLE_ITEMS_CSV);
-		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV, DEFAULT_SUPPLIER);
+		modelOutput = new ModelOutput(conn, SAMPLE_OUTPUT_CSV, DEFAULT_SUPPLIER, DATA_LOCATIONS);
 		return conn;
 	}
 

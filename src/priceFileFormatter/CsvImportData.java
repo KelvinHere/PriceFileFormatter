@@ -1,3 +1,10 @@
+/* CsvImportData takes a connection, file location and table name enum
+ * 
+ * It inserts the CSV data into the specified database table and removes any
+ * unwanted characters from said data
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.io.BufferedReader;

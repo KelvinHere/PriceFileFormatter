@@ -1,3 +1,7 @@
+/* This Model creates the output table for the database including 
+ * any formatting or rules the legacy database demands
+ */
+
 package priceFileFormatter;
 
 import java.io.File;
@@ -16,6 +20,7 @@ public class ModelOutput {
 	private String[] neededFields = new String[] {"their_sku", "their_description", "net_cost"};
 	private String selectedSupplier = "FL01";
 	private HashMap<String, String> supplierData = new HashMap<>();
+	private HashMap<Integer, String> dataLocations;
 	private Connection conn;
 	
 	private String model = String.format("CREATE TABLE IF NOT EXISTS output("
@@ -34,10 +39,11 @@ public class ModelOutput {
 			+ OutputFields.THEIR_DESCRIPTION.lowerCase() + " VARCHAR(255))");
 
 	
-	public ModelOutput(Connection conn, String csvOutputFile, String supplier) {
+	public ModelOutput(Connection conn, String csvOutputFile, String supplier, HashMap<Integer, String> dataLocations) {
 		this.selectedSupplier = supplier;
 		this.conn = conn;
 		this.csvOutputFileLocation = csvOutputFile;
+		this.dataLocations = dataLocations;
 		// Create importTable
 		SqlHelper.execute(conn, model);
 		
@@ -54,11 +60,15 @@ public class ModelOutput {
 		String sql = String.format("SELECT * FROM %s WHERE supplier_name = '%s'", Tables.SUPPLIER, selectedSupplier);
 		ResultSet rs = SqlHelper.query(conn, sql);
 		supplierData = supplierRsToHashMap(rs);
-		
 		// Fetch data from new imports
 		sql = String.format("INSERT INTO %s(their_sku, their_description, net_cost) "
-								+ "SELECT PRODUCT_CODE, PRODUCT_DESCRIPTION, NET_COST "
-								+ "from %s", Tables.OUTPUT, Tables.IMPORT);
+								+ "SELECT %s, %s, %s "
+								+ "from %s", 
+								Tables.OUTPUT,
+								dataLocations.get(0),
+								dataLocations.get(1),
+								dataLocations.get(2),
+								Tables.IMPORT);
 		SqlHelper.execute(conn, sql);
 		
 		// Remove unwanted characters and patterns from their description

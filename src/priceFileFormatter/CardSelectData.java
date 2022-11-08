@@ -1,3 +1,9 @@
+/* Creates the GUI to show the new supplier file and give user a chance
+ * to select the data they want to use from it.  Allows the user to 
+ * restart the process.
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.awt.BorderLayout;
@@ -9,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -19,6 +26,9 @@ public class CardSelectData extends JPanel {
 	JTextArea importsTextArea;
 	JButton restartButton;
 	JButton nextButton;
+	JComboBox<String> selectSKU;
+	JComboBox<String> selectDescription;
+	JComboBox<String> selectNetCost;
 	PriceFileFormatter priceFileFormatter;
 	Connection conn;
 		
@@ -57,17 +67,17 @@ public class CardSelectData extends JPanel {
 		selectNorthPanel.setLayout(new BoxLayout(selectNorthPanel, BoxLayout.Y_AXIS));
 		// SKU select
 		JLabel selectSKULabel = new JLabel("Select SKU column"); 
-		JComboBox<String> selectSKU = new JComboBox<>(columnNames);
+		selectSKU = new JComboBox<>(columnNames);
 		selectNorthPanel.add(selectSKULabel);
 		selectNorthPanel.add(selectSKU);
 		// Description select
 		JLabel selectDescriptionLabel = new JLabel("Select Description column"); 
-		JComboBox<String> selectDescription = new JComboBox<>(columnNames);
+		selectDescription = new JComboBox<>(columnNames);
 		selectNorthPanel.add(selectDescriptionLabel);
 		selectNorthPanel.add(selectDescription);
 		// Net Cost select
-		JLabel selectNetCostLabel = new JLabel("Select Description column"); 
-		JComboBox<String> selectNetCost = new JComboBox<>(columnNames);
+		JLabel selectNetCostLabel = new JLabel("Select Net Cost column"); 
+		selectNetCost = new JComboBox<>(columnNames);
 		selectNorthPanel.add(selectNetCostLabel);
 		selectNorthPanel.add(selectNetCost);
 		
@@ -85,6 +95,12 @@ public class CardSelectData extends JPanel {
 	
 	private class NextButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			HashMap<Integer, String> order = new HashMap<>();
+			order.put(0, selectSKU.getSelectedItem().toString());
+			order.put(1, selectDescription.getSelectedItem().toString());
+			order.put(2, selectNetCost.getSelectedItem().toString());
+			priceFileFormatter.setDataLocations(order);
+			
 			priceFileFormatter.processFiles();
 			priceFileFormatter.getGui().switchToCardOutput();
 		}

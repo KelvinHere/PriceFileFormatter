@@ -1,3 +1,7 @@
+/* Fields to be included on the output database table 
+ * 
+ */
+
 package priceFileFormatter;
 
 public enum OutputFields {

@@ -1,3 +1,7 @@
+/* This Model creates the supplier table from data in the supplier CSV file
+ *  
+ */
+
 package priceFileFormatter;
 
 import java.sql.Connection;

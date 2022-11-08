@@ -1,3 +1,8 @@
+/* Created the GUI that displays the final formatted data, gives the user an
+ * option to restart the process
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.awt.BorderLayout;

@@ -1,3 +1,7 @@
+/* Creates a temporary in memory database for the program, returns the connection 
+ * 
+ */
+
 package priceFileFormatter;
 
 import java.sql.Connection;
