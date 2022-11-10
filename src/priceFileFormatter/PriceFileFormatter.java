@@ -52,7 +52,7 @@ public class PriceFileFormatter {
 		if (SHOW_DB_GUI)
 			showDBGui(conn);
 		
-		// GUI
+		// Initialise GUI
 		Gui gui = new Gui(this);
 		gui.go();
 	}
