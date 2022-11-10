@@ -4,7 +4,7 @@
 
 package priceFileFormatter;
 
-import java.io.File;
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -144,13 +144,12 @@ public class ModelOutput {
 	public void createCsv(String location) {
 		ResultSet rs = getAllItemsInTable();
 		try {
-			FileWriter outputFile = new FileWriter(String.format("%s", location));
-			outputFile.write(ResultToCSV.getHeaders(rs, true));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(String.format("%s", location)));
+			writer.write(ResultToCSV.getHeaders(rs, true));
 			while (rs.next()) {
-				outputFile.write(ResultToCSV.convert(rs));
+				writer.write(ResultToCSV.convert(rs));
 			}
-			outputFile.flush();
-			outputFile.close();
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
