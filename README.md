@@ -41,6 +41,17 @@ Using HSQLDB the database model is built on the diagram below
 2 | " | See if I have stock of an EOL item | Dump the stock quickly & remove it from show-room
 
 ### Features
+* User can select a CSV file with products in
+* User can select a supplier from a list
+* User can create an output file from the inputs above
+
+* CSV
+	* Instead of using a CSV library, as a learning experience I have created a reader and parser manually
+	* CSV headers are read and SQL tables can be created from these
+	* Formatting CSV data, first commas (,) in between double quotes ("") are removed
+	* Backslashes and double quotes are removed ("")
+
+
 Program will :-
 * Have GUI to select New Price file, Report file & Suppliers file
 * Format the price file so it can be consumed by a legacy database
@@ -57,6 +68,8 @@ Testing is automated using JUnit
 - [Java](https://www.java.com/en/) - Language
 - [HSQLDB](https://hsqldb.org/) - Database
 - [Eclipse](https://www.eclipse.org/ide/) - IDE
+- Regex
+- SQL
 - [Git](https://git-scm.com/) - Version control
 - [GitHub](https://www.github.com) - Code hosting platform
 - [Draw.io](https://www.draw.io/) -Prototyping wire-framing tool
