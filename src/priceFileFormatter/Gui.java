@@ -36,15 +36,7 @@ public class Gui {
         tabbedPane = new JTabbedPane();
         // Card 1 - Select Files
         cardSelectFiles = new CardSelectFiles(priceFileFormatter);
-        // Card 2 - Select Files
-        cardSelectData = new CardSelectData(priceFileFormatter);
-        // Card 3 - Output
-        cardOutput = new CardOutput(priceFileFormatter);
-
-        // Add cards to pane
         tabbedPane.addTab(FILE_SELECT, cardSelectFiles);
-        tabbedPane.addTab(SELECT_DATA, cardSelectData);
-        tabbedPane.addTab(PROCESSED_DATA, cardOutput);
         
         //tabbedPane.setEnabledAt(1, false);
         pane.add(tabbedPane, BorderLayout.CENTER);
@@ -103,11 +95,21 @@ public class Gui {
     
     
     public CardOutput getCardOutput() {
+    	if (cardOutput == null) {
+	    	// Card 3 - Output
+	        cardOutput = new CardOutput(priceFileFormatter);
+	        tabbedPane.addTab(PROCESSED_DATA, cardOutput);
+    	}
     	return cardOutput;
     }
     
     
     public CardSelectData getCardSelectData() {
+        if (cardSelectData == null) {
+	    	// Create select data card
+	        cardSelectData = new CardSelectData(priceFileFormatter);
+	        tabbedPane.addTab(SELECT_DATA, cardSelectData);
+        }
     	return cardSelectData;
     }
     

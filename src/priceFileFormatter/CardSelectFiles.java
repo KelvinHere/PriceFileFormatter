@@ -160,6 +160,7 @@ public class CardSelectFiles extends JPanel {
 				File selectedFile = new File(fileLocation);
 				if (selectedFile.exists()) {
 					priceFileLocation = fileLocation;
+					priceFileFormatter.setCsvImportFile(fileLocation);
 					priceFileMessageLabel.setText("Selected File : " + selectedFile.getName());
 				} else {
 					reportMessageLabel.setText("File does not exist, try again.");

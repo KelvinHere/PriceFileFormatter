@@ -45,10 +45,9 @@ public class PriceFileFormatter {
 	public void getFiles() {
 		// Stage 1 - Get files to process
 		conn = Database.connect();
-		// Create import & supplier tables and populate
-		modelImport = new ModelImport(conn, csvImportFile);
+		// Create supplier tables and populate
 		ModelSupplier.importSuppliers(conn, csvSupplierFile);
-		
+
 		if (SHOW_DB_GUI)
 			showDBGui(conn);
 		
@@ -60,6 +59,8 @@ public class PriceFileFormatter {
 	
 	public void selectData(String selectedSupplier) {
 		// Stage 2 - Select columns with needed data to create output & update gui
+		// Create new items import table
+		modelImport = new ModelImport(conn, csvImportFile);
 		this.selectedSupplier = selectedSupplier;
 		CardSelectData cardSelectData = gui.getCardSelectData();
 		ResultSet rs = modelImport.getAllItemsInTable();
