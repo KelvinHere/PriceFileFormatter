@@ -23,6 +23,7 @@ public class SqlHelper {
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.execute();
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -34,6 +35,7 @@ public class SqlHelper {
 		try {
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

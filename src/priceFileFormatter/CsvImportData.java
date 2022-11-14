@@ -34,13 +34,12 @@ public class CsvImportData {
 			// Fill fields from CSV
 			PreparedStatement ps;
 			while ((line = br.readLine()) != null) {
-				String[] item = line.split(splitBy);
+				String cleanedLine = cleanLine(line);
+				String[] item = cleanedLine.split(splitBy);
 				String sql = String.format("INSERT INTO %s(%s) VALUES(%s)", tableName.toString(), fields, sqlValues);
 				ps = conn.prepareStatement(sql);
 				for (int i=0; i < numOfFields; i++) {
-					// Replaced unwanted characters that could interfere with CSV format
-					String currentItem = cleanImportedItem(item[i]);
-					ps.setString(i+1, currentItem);
+					ps.setString(i+1, item[i]);
 				}
 				ps.execute();
 			}
@@ -71,11 +70,29 @@ public class CsvImportData {
 	}
 	
 	
-	private static String cleanImportedItem(String currentItem) {
-		// Basic cleaning of string
-		String item = currentItem;
-		item = item.replace(",", "-");
-		item = item.replace("\"", "");
-		return item;
+	static String cleanLine(String line) {
+		// Remove any commas in within quotes
+		Boolean openingQuote = false;
+		StringBuilder output = new StringBuilder();
+		
+		for (int i=0; i < line.length(); i++) {
+			if (line.charAt(i) == '"') {
+				System.out.println("Double detected#############");
+				System.out.println(line.charAt(i));
+				openingQuote = !openingQuote;
+			}
+			if ((line.charAt(i) == ',') && (openingQuote == true)) {
+				System.out.println("Comma detected#############");
+				continue;
+			}
+			output.append(line.charAt(i));
+		}
+		
+		// Remove any quotes
+		String result = output.toString().replace("\"", "").replace("\\", "");
+
+
+		System.out.println(output.toString());
+		return result;
 	}
 }
